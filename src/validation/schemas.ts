@@ -69,7 +69,7 @@ export const RegistrationSchema = z
   .superRefine((data, ctx) => {
     if (data.academic_year === 'Staff') {
       // Staff requires field_of_study but not major
-      if (!data.field_of_study || data.field_of_study.length === 0) {
+      if (!data.field_of_study) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Field of study is required for Staff',
@@ -78,7 +78,7 @@ export const RegistrationSchema = z
       }
     } else {
       // Non-staff requires major and why_attend
-      if (!data.major || data.major.length === 0) {
+      if (!data.major) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Major is required',
