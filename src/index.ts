@@ -20,16 +20,16 @@ app.get('/', (_req, res) => {
 
 app.use(errorHandler);
 
-async function start(): Promise<void> {
-  try {
-    await connectToDatabase();
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-    });
-  } catch (error) {
-    console.error('Failed to start server:', error);
-    process.exit(1);
-  }
+// Connect to database on cold start
+connectToDatabase().catch((error) => {
+  console.error('Failed to connect to database:', error);
+});
+
+// Only start server when running locally (not on Vercel)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
 }
 
-start();
+export default app;
