@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Summit - Home</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="logo">AI Summit</a>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/register.html">Register</a></li>
+        <li><a href="/login.html">Admin</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Banner Section -->
+    <section id="banner">
+      <div class="hero" id="hero-content">
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Speakers Section -->
+    <section id="speakers">
+      <h2>Featured Speakers</h2>
+      <div class="grid" id="speakers-grid">
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Loading speakers...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Events Section -->
+    <section id="events">
+      <h2>Planned Events</h2>
+      <div class="grid" id="events-grid">
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Loading events...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sponsors Section -->
+    <section id="sponsors">
+      <h2>Our Sponsors</h2>
+      <div id="sponsors-content">
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Loading sponsors...</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    async function loadBanner() {
+      try {
+        const res = await fetch('/api/home');
+        const data = await res.json();
+        const container = document.getElementById('hero-content');
+
+        // Clear existing content (e.g., loading spinner)
+        container.innerHTML = '';
+
+        const createDefaultBanner = () => {
+          const heading = document.createElement('h1');
+          heading.textContent = 'AI Summit 2025';
+
+          const description = document.createElement('p');
+          description.textContent = 'Join us for an exciting exploration of artificial intelligence, machine learning, and the future of technology.';
+
+          const link = document.createElement('a');
+          link.href = '/register.html';
+          link.className = 'btn btn-primary';
+          link.textContent = 'Register Now';
+
+          container.appendChild(heading);
+          container.appendChild(description);
+          container.appendChild(link);
+        };
+
+        if (data.banner) {
+          // Optional banner image
+          if (data.banner.banner_url) {
+            const img = document.createElement('img');
+            img.src = data.banner.banner_url;
+            img.alt = 'Banner';
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '300px';
+            img.style.objectFit = 'cover';
+            img.style.borderRadius = '15px';
+            img.style.marginBottom = '30px';
+            container.appendChild(img);
+          }
+
+          const heading = document.createElement('h1');
+          heading.textContent = data.banner.banner_title || '';
+
+          const description = document.createElement('p');
+          description.textContent = data.banner.banner_description || '';
+
+          const link = document.createElement('a');
+          link.href = '/register.html';
+          link.className = 'btn btn-primary';
+          link.textContent = 'Register Now';
+
+          container.appendChild(heading);
+          container.appendChild(description);
+          container.appendChild(link);
+        } else {
+          createDefaultBanner();
+        }
+      } catch (err) {
+        const container = document.getElementById('hero-content');
+        container.innerHTML = '';
+
+        const heading = document.createElement('h1');
+        heading.textContent = 'AI Summit 2025';
+
+        const description = document.createElement('p');
+        description.textContent = 'Join us for an exciting exploration of artificial intelligence, machine learning, and the future of technology.';
+
+        const link = document.createElement('a');
+        link.href = '/register.html';
+        link.className = 'btn btn-primary';
+        link.textContent = 'Register Now';
+
+        container.appendChild(heading);
+        container.appendChild(description);
+        container.appendChild(link);
+      }
+    }
+
+    async function loadSpeakers() {
+      try {
+        const res = await fetch('/api/speakers');
+        const data = await res.json();
+        const container = document.getElementById('speakers-grid');
+
+        if (data.speakers && data.speakers.length > 0) {
+          container.innerHTML = data.speakers.map(speaker => `
+            <div class="card speaker-card">
+              <img src="${speaker.headshot_img_url}" alt="${speaker.first_name}">
+              <h3>${speaker.first_name}${speaker.middle_name ? ' ' + speaker.middle_name : ''}${speaker.last_name ? ' ' + speaker.last_name : ''}</h3>
+              <p>${speaker.bio}</p>
+            </div>
+          `).join('');
+        } else {
+          container.innerHTML = `
+            <div class="empty-state">
+              <h3>No speakers announced yet</h3>
+              <p>Check back soon for speaker announcements!</p>
+            </div>
+          `;
+        }
+      } catch (err) {
+        document.getElementById('speakers-grid').innerHTML = `
+          <div class="empty-state">
+            <h3>Unable to load speakers</h3>
+          </div>
+        `;
+      }
+    }
+
+    async function loadEvents() {
+      try {
+        const res = await fetch('/api/events');
+        const data = await res.json();
+        const container = document.getElementById('events-grid');
+
+        if (data.events && data.events.length > 0) {
+          container.innerHTML = data.events.map(event => `
+            <div class="card">
+              <img src="${event.thumbnail_url}" alt="${event.event_title}">
+              <h3>${event.event_title}</h3>
+              <p>${event.event_description}</p>
+              ${event.tags && event.tags.length > 0 ? `
+                <div class="tags">
+                  ${event.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                </div>
+              ` : ''}
+            </div>
+          `).join('');
+        } else {
+          container.innerHTML = `
+            <div class="empty-state">
+              <h3>No events scheduled yet</h3>
+              <p>Events will be announced soon!</p>
+            </div>
+          `;
+        }
+      } catch (err) {
+        document.getElementById('events-grid').innerHTML = `
+          <div class="empty-state">
+            <h3>Unable to load events</h3>
+          </div>
+        `;
+      }
+    }
+
+    async function loadSponsors() {
+      try {
+        const res = await fetch('/api/sponsors');
+        const data = await res.json();
+        const container = document.getElementById('sponsors-content');
+
+        if (data.sponsors && data.sponsors.length > 0) {
+          const tiers = ['platinum', 'gold', 'silver', 'bronze'];
+          const tierNames = { platinum: 'Platinum', gold: 'Gold', silver: 'Silver', bronze: 'Bronze' };
+
+          let html = '';
+          tiers.forEach(tier => {
+            const tierSponsors = data.sponsors.filter(s => s.sponsor_tier === tier);
+            if (tierSponsors.length > 0) {
+              html += `
+                <div class="sponsor-tier ${tier}">
+                  <h3>${tierNames[tier]} Sponsors</h3>
+                  <div class="sponsor-logos">
+                    ${tierSponsors.map(sponsor => `
+                      <div class="sponsor-logo">
+                        <img src="${sponsor.sponsor_logo}" alt="${sponsor.sponsor_name}" title="${sponsor.sponsor_name}">
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              `;
+            }
+          });
+          container.innerHTML = html;
+        } else {
+          container.innerHTML = `
+            <div class="empty-state">
+              <h3>Sponsors coming soon</h3>
+              <p>Interested in sponsoring? Contact us!</p>
+            </div>
+          `;
+        }
+      } catch (err) {
+        document.getElementById('sponsors-content').innerHTML = `
+          <div class="empty-state">
+            <h3>Unable to load sponsors</h3>
+          </div>
+        `;
+      }
+    }
+
+    // Load all content
+    loadBanner();
+    loadSpeakers();
+    loadEvents();
+    loadSponsors();
+  </script>
+</body>
+</html>
