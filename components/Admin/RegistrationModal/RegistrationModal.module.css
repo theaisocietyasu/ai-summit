@@ -1,0 +1,164 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal {
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+  border: 1px solid rgba(0, 217, 255, 0.2);
+  border-radius: 20px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 30px;
+  position: relative;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(0, 217, 255, 0.1);
+}
+
+.closeBtn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #e4e4e4;
+  font-size: 2rem;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s;
+}
+
+.closeBtn:hover {
+  color: #00d9ff;
+}
+
+.header {
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.header h2 {
+  margin: 0;
+  color: #00d9ff;
+  font-size: 1.5rem;
+  flex: 1;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 25px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.label {
+  color: #b3b3b3;
+  font-weight: 600;
+  min-width: 140px;
+  font-size: 0.95rem;
+}
+
+.value {
+  color: #e4e4e4;
+  flex: 1;
+  text-align: right;
+  word-break: break-word;
+}
+
+.resumeBtn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 217, 255, 0.3);
+  background: rgba(0, 217, 255, 0.1);
+  color: #00d9ff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.resumeBtn:hover:not(:disabled) {
+  background: rgba(0, 217, 255, 0.2);
+  border-color: #00d9ff;
+}
+
+.resumeBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pdfContainer {
+  margin: 25px 0;
+  border-radius: 15px;
+  border: 1px solid rgba(0, 217, 255, 0.2);
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.pdfFrame {
+  width: 100%;
+  height: 500px;
+  border: none;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.primaryBtn {
+  flex: 1;
+  padding: 12px 24px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(90deg, #00d9ff, #a855f7);
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.primaryBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3);
+}
