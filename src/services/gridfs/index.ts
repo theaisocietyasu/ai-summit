@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import multer from 'multer';
-import { GridFSBucket, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { Readable } from 'stream';
 import { getGridFSBucket } from '../database';
 

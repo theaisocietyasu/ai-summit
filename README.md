@@ -14,6 +14,10 @@ Backend for the AI Summit event website.
 | `MONGODB_URI` | `mongodb://localhost:27017` | MongoDB connection string |
 | `DB_NAME` | `ai_summit` | Database name |
 | `PORT` | `3000` | Server port |
+| `MONGO_MAX_POOL_SIZE` | driver default | Maximum number of connections in the MongoDB pool |
+| `MONGO_MIN_POOL_SIZE` | `0` | Minimum number of connections to keep in the MongoDB pool |
+| `MONGO_MAX_IDLE_TIME_MS` | driver default | Maximum time in milliseconds a connection can remain idle in the pool |
+| `MONGO_WAIT_QUEUE_TIMEOUT_MS` | driver default | Maximum time in milliseconds to wait for a connection from the pool |
 
 ## Setup
 
