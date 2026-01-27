@@ -10,7 +10,8 @@ export interface Registration {
   email: string;
   academic_year: AcademicYear;
   major?: string;
-  why_attend: string;
+  field_of_study?: string;
+  why_attend?: string;
   resume?: string;
   photo_release: boolean;
   relevant_courses?: string[];
