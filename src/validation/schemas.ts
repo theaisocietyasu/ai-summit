@@ -55,7 +55,8 @@ export const RegistrationSchema = z
         message: "Academic year must be Freshman, Sophomore, Junior, Senior, Master's, PhD, or Staff",
       }),
     }),
-    major: z.string().trim().min(1, 'Major is required').max(MAX_STRING_LENGTH),
+    major: z.string().trim().max(MAX_STRING_LENGTH).optional(),
+    field_of_study: z.string().trim().max(MAX_STRING_LENGTH).optional(),
     why_attend: z.string().trim().max(MAX_DESCRIPTION_LENGTH),
     photo_release: z.boolean().refine((val) => val === true, {
       message: 'Photo release must be acknowledged',
@@ -66,7 +67,24 @@ export const RegistrationSchema = z
     prior_work_exp: z.string().trim().max(MAX_DESCRIPTION_LENGTH).optional(),
   })
   .superRefine((data, ctx) => {
-    if (data.academic_year !== 'Staff') {
+    if (data.academic_year === 'Staff') {
+      // Staff requires field_of_study but not major
+      if (!data.field_of_study || data.field_of_study.length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Field of study is required for Staff',
+          path: ['field_of_study'],
+        });
+      }
+    } else {
+      // Non-staff requires major and why_attend
+      if (!data.major || data.major.length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Major is required',
+          path: ['major'],
+        });
+      }
       if (!data.why_attend || data.why_attend.length < 500) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
