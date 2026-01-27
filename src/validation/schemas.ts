@@ -55,7 +55,7 @@ export const RegistrationSchema = z
         message: "Academic year must be Freshman, Sophomore, Junior, Senior, Master's, PhD, or Staff",
       }),
     }),
-    major: z.string().trim().min(1, 'Major is required').max(MAX_STRING_LENGTH),
+    major: z.string().trim().min(1, 'Major is required').max(MAX_STRING_LENGTH).optional(),
     why_attend: z.string().trim().max(MAX_DESCRIPTION_LENGTH),
     photo_release: z.boolean().refine((val) => val === true, {
       message: 'Photo release must be acknowledged',
