@@ -57,7 +57,7 @@ export const RegistrationSchema = z
     }),
     major: z.string().trim().max(MAX_STRING_LENGTH).optional(),
     field_of_study: z.string().trim().max(MAX_STRING_LENGTH).optional(),
-    why_attend: z.string().trim().max(MAX_DESCRIPTION_LENGTH),
+    why_attend: z.string().trim().max(MAX_DESCRIPTION_LENGTH).optional(),
     photo_release: z.boolean().refine((val) => val === true, {
       message: 'Photo release must be acknowledged',
     }),
