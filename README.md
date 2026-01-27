@@ -1,6 +1,6 @@
 # AI Summit Backend
 
-Backend for the AI Summit event website.
+Backend for the AI Summit event website
 
 ## Requirements
 
