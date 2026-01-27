@@ -281,17 +281,40 @@
   </div>
 
   <script>
-    const authString = localStorage.getItem('adminAuth');
+    // Handle token from OAuth callback (in URL fragment)
+    const hash = window.location.hash;
+    if (hash.startsWith('#token=')) {
+      const token = hash.substring(7);
+      localStorage.setItem('authToken', token);
+      // Clear the hash from URL
+      history.replaceState(null, '', window.location.pathname);
+    }
+
+    // Get token from localStorage
+    const authToken = localStorage.getItem('authToken');
 
     // Redirect to login if not authenticated
-    if (!authString) {
+    if (!authToken) {
       window.location.href = '/login.html';
     }
 
-    // Auth header for all requests
+    // Auth header for all requests (now uses Bearer token)
     const authHeaders = {
-      'Authorization': `Basic ${authString}`
+      'Authorization': `Bearer ${authToken}`
     };
+
+    // Verify session is still valid on page load
+    fetch('/api/auth/session', { headers: authHeaders })
+      .then(res => {
+        if (!res.ok) {
+          localStorage.removeItem('authToken');
+          window.location.href = '/login.html';
+        }
+      })
+      .catch(() => {
+        localStorage.removeItem('authToken');
+        window.location.href = '/login.html';
+      });
 
     // Store registrations data globally for modal access
     let registrationsData = [];
@@ -404,9 +427,15 @@
     });
 
     // Logout
-    document.getElementById('logout-link').addEventListener('click', (e) => {
+    document.getElementById('logout-link').addEventListener('click', async (e) => {
       e.preventDefault();
-      localStorage.removeItem('adminAuth');
+      try {
+        await fetch('/api/auth/logout', {
+          method: 'POST',
+          headers: authHeaders
+        });
+      } catch {}
+      localStorage.removeItem('authToken');
       window.location.href = '/login.html';
     });
 
