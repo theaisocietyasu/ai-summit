@@ -430,14 +430,14 @@ export async function updateRegistration(
         { returnDocument: 'after' }
       );
 
-    if (!result.value) {
+    if (!result) {
       res.status(404).json({ error: 'Registration not found' });
       return;
     }
 
     res.json({
       message: 'Registration updated successfully',
-      registration: result.value,
+      registration: result,
     });
   } catch (error) {
     next(error);
