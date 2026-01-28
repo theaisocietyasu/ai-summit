@@ -4,7 +4,7 @@ import {
   getDiscordAuthUrl,
   exchangeCodeForToken,
   getDiscordUser,
-  verifyDiscordAdminRole,
+  verifyDiscordAllowedLoginRole,
 } from '../services/discord';
 
 const router = Router();
@@ -44,9 +44,9 @@ router.get('/callback/discord', async (req: Request, res: Response) => {
       return res.redirect('/login.html?error=user_fetch_failed');
     }
 
-    // Verify user has admin role in Discord guild
-    const hasAdminRole = await verifyDiscordAdminRole(discordUser.id);
-    if (!hasAdminRole) {
+    // Verify user has an allowed role in Discord guild
+    const isAllowed = await verifyDiscordAllowedLoginRole(discordUser.id);
+    if (!isAllowed) {
       return res.redirect('/login.html?error=unauthorized');
     }
 
