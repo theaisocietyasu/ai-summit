@@ -99,7 +99,7 @@
 
       switch (error) {
         case 'unauthorized':
-          errorMessage = 'Access denied. You must have the admin role in Discord.';
+          errorMessage = 'Access denied. Your Discord account must have one of the authorized team roles (Executive Team, Software Team, Technical Team, or Operations Team).';
           break;
         case 'oauth_failed':
           errorMessage = 'Discord authorization failed. Please try again.';
