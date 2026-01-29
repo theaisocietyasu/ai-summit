@@ -76,7 +76,20 @@ router.get('/callback/discord', async (req: Request, res: Response) => {
  * POST /api/auth/logout
  * Clear authentication
  */
-router.post('/logout', (_req: Request, res: Response) => {
+router.post('/logout', (req: Request, res: Response) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.startsWith('Bearer ')
+    ? authHeader.replace('Bearer ', '')
+    : undefined;
+
+  if (!token) {
+    return res.status(401).json({ success: false, error: 'Unauthorized' });
+  }
+
+  const payload = verifyToken(token);
+  if (!payload) {
+    return res.status(401).json({ success: false, error: 'Unauthorized' });
+  }
   res.clearCookie('auth_token');
   res.json({ success: true });
 });
