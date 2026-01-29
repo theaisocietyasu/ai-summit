@@ -95,11 +95,23 @@ export const RegistrationSchema = z
     }
   });
 
-export const RegistrationUpdateSchema = z.object({
-  is_waitlisted: z.boolean().optional(),
-  is_approved: z.boolean().optional(),
-  is_rejected: z.boolean().optional(),
-});
+export const RegistrationUpdateSchema = z
+  .object({
+    is_waitlisted: z.boolean().optional(),
+    is_approved: z.boolean().optional(),
+    is_rejected: z.boolean().optional(),
+  })
+  .refine(
+    (data) => {
+      const trueCount = [data.is_waitlisted, data.is_approved, data.is_rejected].filter(
+        (val) => val === true
+      ).length;
+      return trueCount <= 1;
+    },
+    {
+      message: 'Only one of is_waitlisted, is_approved, or is_rejected can be true at a time',
+    }
+  );
 
 export type BannerInput = z.infer<typeof BannerSchema>;
 export type SpeakerInput = z.infer<typeof SpeakerSchema>;
