@@ -7,10 +7,13 @@ import { verifyToken } from '../services/jwt';
  */
 export function adminAuth(req: Request, res: Response, next: NextFunction): void {
   // Try to get token from multiple sources
-  const token =
-    req.cookies?.auth_token ||
-    req.headers.authorization?.replace('Bearer ', '');
+  const authHeader = req.headers.authorization;
+  const authHeaderToken =
+    typeof authHeader === 'string' && authHeader.startsWith('Bearer ')
+      ? authHeader.slice('Bearer '.length).trim()
+      : undefined;
 
+  const token = req.cookies?.auth_token || authHeaderToken;
   if (!token) {
     res.status(401).json({ error: 'Authentication required' });
     return;
