@@ -64,8 +64,8 @@ router.get('/callback/discord', async (req: Request, res: Response) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    // Redirect to admin with token in URL fragment for localStorage storage
-    res.redirect(`/admin.html#token=${token}`);
+    // Redirect to admin (token is in httpOnly cookie, not exposed to JavaScript)
+    res.redirect('/admin.html');
   } catch (err) {
     console.error('OAuth callback error:', err);
     res.redirect('/login.html?error=server_error');
