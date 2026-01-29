@@ -218,52 +218,6 @@ export async function getDiscordUser(accessToken: string): Promise<DiscordUser |
 }
 
 /**
- * Verify user has admin role in Discord guild using bot token
- */
-export async function verifyDiscordAdminRole(discordUserId: string): Promise<boolean> {
-  const botToken = process.env.DISCORD_BOT_TOKEN;
-  const guildId = process.env.DISCORD_GUILD_ID;
-  const adminRoleId = process.env.ADMIN_ROLE_ID;
-
-  if (!botToken || !guildId || !adminRoleId) {
-    console.error('Missing Discord configuration in environment variables');
-    return false;
-  }
-
-  try {
-    const response = await fetch(
-      `https://discord.com/api/v10/guilds/${guildId}/members/${discordUserId}`,
-      {
-        headers: {
-          Authorization: `Bot ${botToken}`,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      if (response.status === 404) {
-        console.log(`User ${discordUserId} is not a member of the guild`);
-        return false;
-      }
-      console.error(`Discord API error: ${response.status} ${response.statusText}`);
-      return false;
-    }
-
-    const member = (await response.json()) as DiscordGuildMember;
-    const hasRole = member.roles.includes(adminRoleId);
-
-    if (!hasRole) {
-      console.log(`User ${discordUserId} does not have admin role ${adminRoleId}`);
-    }
-
-    return hasRole;
-  } catch (error) {
-    console.error('Error verifying Discord role:', error);
-    return false;
-  }
-}
-
-/**
  * Generate Discord OAuth2 authorization URL
  */
 export function getDiscordAuthUrl(): string {
