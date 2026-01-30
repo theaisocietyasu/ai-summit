@@ -31,11 +31,13 @@ export async function createRegistration(
 
     const file = req.file;
     const isStaff = validatedData.academic_year === 'Staff';
+    const isEmployer = validatedData.academic_year === 'Employer';
 
-    if (!isStaff && !file) {
+    // Staff and Employers don't need a resume
+    if (!isStaff && !isEmployer && !file) {
       const error: AppError = new Error('Resume is required');
       error.statusCode = 400;
-      error.errors = { resume: 'Resume is required for non-staff registrations' };
+      error.errors = { resume: 'Resume is required for student registrations' };
       throw error;
     }
 

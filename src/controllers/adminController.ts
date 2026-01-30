@@ -303,13 +303,14 @@ export async function getRegistrations(
     // Add computed fields for sorting
     const statusOrder = { pending: 0, approved: 1, waitlisted: 2, rejected: 3 };
     const yearOrder: Record<string, number> = {
-      Staff: 0,
-      PhD: 1,
-      "Master's": 2,
-      Senior: 3,
-      Junior: 4,
-      Sophomore: 5,
-      Freshman: 6,
+      Employer: 0,
+      Staff: 1,
+      PhD: 2,
+      "Master's": 3,
+      Senior: 4,
+      Junior: 5,
+      Sophomore: 6,
+      Freshman: 7,
     };
 
     pipeline.push({

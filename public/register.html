@@ -44,13 +44,13 @@
           <div class="form-group">
             <label for="email">Email *</label>
             <input type="email" id="email" name="email" required maxlength="1000">
-            <p class="form-hint">Must be @asu.edu or @gmail.com</p>
+            <p class="form-hint" id="email-hint">Must be @asu.edu or @gmail.com</p>
           </div>
 
           <div class="form-group">
-            <label for="academic_year">Academic Year *</label>
+            <label for="academic_year">Registration Type *</label>
             <select id="academic_year" name="academic_year" required>
-              <option value="">Select your academic year...</option>
+              <option value="">Select your registration type...</option>
               <option value="Freshman">Freshman</option>
               <option value="Sophomore">Sophomore</option>
               <option value="Junior">Junior</option>
@@ -58,12 +58,29 @@
               <option value="Master's">Master's</option>
               <option value="PhD">PhD</option>
               <option value="Staff">Staff</option>
+              <option value="Employer">Employer</option>
             </select>
           </div>
 
           <div class="form-group" id="field-of-study-group" style="display: none;">
             <label for="field_of_study">Field of Study *</label>
             <input type="text" id="field_of_study" name="field_of_study" maxlength="1000">
+          </div>
+
+          <div class="form-group" id="company-name-group" style="display: none;">
+            <label for="company_name">Company Name *</label>
+            <input type="text" id="company_name" name="company_name" maxlength="1000">
+          </div>
+
+          <div class="form-group" id="job-title-group" style="display: none;">
+            <label for="job_title">Job Title *</label>
+            <input type="text" id="job_title" name="job_title" maxlength="1000">
+          </div>
+
+          <div class="form-group" id="company-website-group" style="display: none;">
+            <label for="company_website">Company Website</label>
+            <input type="url" id="company_website" name="company_website" maxlength="1000" placeholder="https://...">
+            <p class="form-hint">Optional</p>
           </div>
 
           <div class="form-group" id="major-group">
@@ -126,8 +143,8 @@
     const messageDiv = document.getElementById('message');
     const submitBtn = document.getElementById('submit-btn');
 
-    // Staff-only fields to hide
-    const staffHiddenFields = [
+    // Student-only fields (hidden for Staff and Employer)
+    const studentOnlyFields = [
       'major-group',
       'why-attend-group',
       'resume-group',
@@ -135,25 +152,58 @@
       'prior-work-group'
     ];
 
-    function toggleStaffFields() {
-      const isStaff = academicYear.value === 'Staff';
-      staffHiddenFields.forEach(id => {
+    // Employer-only fields
+    const employerOnlyFields = [
+      'company-name-group',
+      'job-title-group',
+      'company-website-group'
+    ];
+
+    function toggleRegistrationTypeFields() {
+      const regType = academicYear.value;
+      const isStaff = regType === 'Staff';
+      const isEmployer = regType === 'Employer';
+      const isStudent = !isStaff && !isEmployer && regType !== '';
+
+      // Hide student fields for Staff and Employer
+      studentOnlyFields.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
-          el.style.display = isStaff ? 'none' : 'block';
+          el.style.display = isStudent ? 'block' : 'none';
         }
       });
-      // Toggle required attributes
-      document.getElementById('major').required = !isStaff;
 
-      // Show/hide and toggle required for staff-only field
+      // Toggle required for student fields
+      document.getElementById('major').required = isStudent;
+
+      // Show/hide Staff field (field of study)
       const fieldOfStudyGroup = document.getElementById('field-of-study-group');
       const fieldOfStudy = document.getElementById('field_of_study');
       fieldOfStudyGroup.style.display = isStaff ? 'block' : 'none';
       fieldOfStudy.required = isStaff;
+
+      // Show/hide Employer fields
+      employerOnlyFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.display = isEmployer ? 'block' : 'none';
+        }
+      });
+
+      // Toggle required for employer fields
+      document.getElementById('company_name').required = isEmployer;
+      document.getElementById('job_title').required = isEmployer;
+
+      // Update email hint for employers
+      const emailHint = document.getElementById('email-hint');
+      if (isEmployer) {
+        emailHint.textContent = 'Any valid email address';
+      } else {
+        emailHint.textContent = 'Must be @asu.edu or @gmail.com';
+      }
     }
 
-    academicYear.addEventListener('change', toggleStaffFields);
+    academicYear.addEventListener('change', toggleRegistrationTypeFields);
 
     // Resume file validation constants
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -188,9 +238,10 @@
       e.preventDefault();
       messageDiv.innerHTML = '';
 
-      // Validate resume file before submission (for non-staff)
+      // Validate resume file before submission (for students only - not Staff or Employer)
       const isStaff = academicYear.value === 'Staff';
-      if (!isStaff && resumeInput.files.length > 0) {
+      const isEmployer = academicYear.value === 'Employer';
+      if (!isStaff && !isEmployer && resumeInput.files.length > 0) {
         const file = resumeInput.files[0];
         if (file.size > MAX_FILE_SIZE) {
           messageDiv.innerHTML = `<div class="message error">Resume file is too large. Maximum size is 5MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB.</div>`;
