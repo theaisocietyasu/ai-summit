@@ -64,8 +64,8 @@ router.get('/callback/discord', async (req: Request, res: Response) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    // Redirect to admin with token in URL fragment for localStorage storage
-    res.redirect(`/admin.html#token=${token}`);
+    // Redirect to admin (auth is via httpOnly cookie)
+    res.redirect('/admin.html');
   } catch (err) {
     console.error('OAuth callback error:', err);
     res.redirect('/login.html?error=server_error');
@@ -77,10 +77,7 @@ router.get('/callback/discord', async (req: Request, res: Response) => {
  * Clear authentication
  */
 router.post('/logout', (req: Request, res: Response) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader?.startsWith('Bearer ')
-    ? authHeader.replace('Bearer ', '')
-    : undefined;
+  const token = req.cookies?.auth_token;
 
   if (!token) {
     return res.status(401).json({ success: false, error: 'Unauthorized' });

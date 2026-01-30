@@ -281,38 +281,14 @@
   </div>
 
   <script>
-    // Handle token from OAuth callback (in URL fragment)
-    const hash = window.location.hash;
-    if (hash.startsWith('#token=')) {
-      const token = hash.substring(7);
-      localStorage.setItem('authToken', token);
-      // Clear the hash from URL
-      history.replaceState(null, '', window.location.pathname);
-    }
-
-    // Get token from localStorage
-    const authToken = localStorage.getItem('authToken');
-
-    // Redirect to login if not authenticated
-    if (!authToken) {
-      window.location.href = '/login.html';
-    }
-
-    // Auth header for all requests using Bearer token
-    const authHeaders = {
-      'Authorization': `Bearer ${authToken}`
-    };
-
-    // Verify session is still valid on page load
-    fetch('/api/auth/session', { headers: authHeaders })
+    // Verify session is valid via httpOnly cookie on page load
+    fetch('/api/auth/session', { credentials: 'same-origin' })
       .then(res => {
         if (!res.ok) {
-          localStorage.removeItem('authToken');
           window.location.href = '/login.html';
         }
       })
       .catch(() => {
-        localStorage.removeItem('authToken');
         window.location.href = '/login.html';
       });
 
@@ -432,10 +408,9 @@
       try {
         await fetch('/api/auth/logout', {
           method: 'POST',
-          headers: authHeaders
+          credentials: 'same-origin'
         });
       } catch {}
-      localStorage.removeItem('authToken');
       window.location.href = '/login.html';
     });
 
@@ -448,7 +423,7 @@
       try {
         const res = await fetch('/api/admin/banner', {
           method: 'POST',
-          headers: authHeaders,
+          credentials: 'same-origin',
           body: formData
         });
         const data = await res.json();
@@ -473,7 +448,7 @@
       try {
         const res = await fetch('/api/admin/speakers', {
           method: 'POST',
-          headers: authHeaders,
+          credentials: 'same-origin',
           body: formData
         });
         const data = await res.json();
@@ -499,7 +474,7 @@
       try {
         const res = await fetch('/api/admin/events', {
           method: 'POST',
-          headers: authHeaders,
+          credentials: 'same-origin',
           body: formData
         });
         const data = await res.json();
@@ -525,7 +500,7 @@
       try {
         const res = await fetch('/api/admin/sponsors', {
           method: 'POST',
-          headers: authHeaders,
+          credentials: 'same-origin',
           body: formData
         });
         const data = await res.json();
@@ -616,7 +591,7 @@
       try {
         const queryString = buildRegistrationsQuery();
         const url = '/api/admin/registrations' + (queryString ? '?' + queryString : '');
-        const res = await fetch(url, { headers: authHeaders });
+        const res = await fetch(url, { credentials: 'same-origin' });
         const data = await res.json();
         const container = document.getElementById('registrations-list');
         registrationsData = data.registrations || [];
@@ -797,8 +772,8 @@
       try {
         const res = await fetch(`/api/admin/registrations/${id}`, {
           method: 'PATCH',
+          credentials: 'same-origin',
           headers: {
-            ...authHeaders,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(updateData)

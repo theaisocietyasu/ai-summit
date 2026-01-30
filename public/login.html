@@ -70,25 +70,17 @@
   </div>
 
   <script>
-    // Check if already logged in
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      // Verify token is still valid
-      fetch('/api/auth/session', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
+    // Check if already logged in via httpOnly cookie
+    fetch('/api/auth/session', { credentials: 'same-origin' })
       .then(res => res.json())
       .then(data => {
         if (data.authenticated) {
           window.location.href = '/admin.html';
-        } else {
-          localStorage.removeItem('authToken');
         }
       })
       .catch(() => {
-        localStorage.removeItem('authToken');
+        // Not authenticated, stay on login page
       });
-    }
 
     // Check for error in URL
     const urlParams = new URLSearchParams(window.location.search);
