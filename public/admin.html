@@ -180,8 +180,9 @@
               </div>
 
               <div class="filter-group">
-                <label for="filter-year">Academic Year</label>
+                <label for="filter-year">Registration Type</label>
                 <select id="filter-year" multiple>
+                  <option value="Employer">Employer</option>
                   <option value="Staff">Staff</option>
                   <option value="PhD">PhD</option>
                   <option value="Master's">Master's</option>
@@ -247,6 +248,18 @@
               <label>Field of Study</label>
               <p id="modal-field"></p>
             </div>
+            <div class="info-group" id="modal-company-group" style="display: none;">
+              <label>Company</label>
+              <p id="modal-company"></p>
+            </div>
+            <div class="info-group" id="modal-job-title-group" style="display: none;">
+              <label>Job Title</label>
+              <p id="modal-job-title"></p>
+            </div>
+            <div class="info-group" id="modal-company-website-group" style="display: none;">
+              <label>Company Website</label>
+              <p id="modal-company-website"></p>
+            </div>
             <div class="info-group" id="modal-why-group">
               <label>Why do they want to attend?</label>
               <p id="modal-why" class="text-block"></p>
@@ -281,17 +294,24 @@
   </div>
 
   <script>
-    const authString = localStorage.getItem('adminAuth');
-
-    // Redirect to login if not authenticated
-    if (!authString) {
-      window.location.href = '/login.html';
+    // HTML escape function to prevent XSS attacks
+    function escapeHtml(text) {
+      if (text == null) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
     }
 
-    // Auth header for all requests
-    const authHeaders = {
-      'Authorization': `Basic ${authString}`
-    };
+    // Verify session is valid via httpOnly cookie on page load
+    fetch('/api/auth/session', { credentials: 'same-origin' })
+      .then(res => {
+        if (!res.ok) {
+          window.location.href = '/login.html';
+        }
+      })
+      .catch(() => {
+        window.location.href = '/login.html';
+      });
 
     // Store registrations data globally for modal access
     let registrationsData = [];
@@ -404,9 +424,14 @@
     });
 
     // Logout
-    document.getElementById('logout-link').addEventListener('click', (e) => {
+    document.getElementById('logout-link').addEventListener('click', async (e) => {
       e.preventDefault();
-      localStorage.removeItem('adminAuth');
+      try {
+        await fetch('/api/auth/logout', {
+          method: 'POST',
+          credentials: 'same-origin'
+        });
+      } catch {}
       window.location.href = '/login.html';
     });
 
@@ -419,7 +444,7 @@
       try {
         const res = await fetch('/api/admin/banner', {
           method: 'POST',
-          headers: authHeaders,
+          credentials: 'same-origin',
           body: formData
         });
         const data = await res.json();
@@ -428,7 +453,7 @@
           messageDiv.innerHTML = `<div class="message success">Banner saved successfully!</div>`;
           e.target.reset();
         } else {
-          messageDiv.innerHTML = `<div class="message error">${data.error || 'Failed to save banner'}</div>`;
+          messageDiv.innerHTML = `<div class="message error">${escapeHtml(data.error) || 'Failed to save banner'}</div>`;
         }
       } catch (err) {
         messageDiv.innerHTML = `<div class="message error">Network error</div>`;
@@ -444,7 +469,7 @@
       try {
         const res = await fetch('/api/admin/speakers', {
           method: 'POST',
-          headers: authHeaders,
+          credentials: 'same-origin',
           body: formData
         });
         const data = await res.json();
@@ -454,7 +479,7 @@
           e.target.reset();
           loadSpeakers();
         } else {
-          messageDiv.innerHTML = `<div class="message error">${data.error || 'Failed to add speaker'}</div>`;
+          messageDiv.innerHTML = `<div class="message error">${escapeHtml(data.error) || 'Failed to add speaker'}</div>`;
         }
       } catch (err) {
         messageDiv.innerHTML = `<div class="message error">Network error</div>`;
@@ -470,7 +495,7 @@
       try {
         const res = await fetch('/api/admin/events', {
           method: 'POST',
-          headers: authHeaders,
+          credentials: 'same-origin',
           body: formData
         });
         const data = await res.json();
@@ -480,7 +505,7 @@
           e.target.reset();
           loadEvents();
         } else {
-          messageDiv.innerHTML = `<div class="message error">${data.error || 'Failed to add event'}</div>`;
+          messageDiv.innerHTML = `<div class="message error">${escapeHtml(data.error) || 'Failed to add event'}</div>`;
         }
       } catch (err) {
         messageDiv.innerHTML = `<div class="message error">Network error</div>`;
@@ -496,7 +521,7 @@
       try {
         const res = await fetch('/api/admin/sponsors', {
           method: 'POST',
-          headers: authHeaders,
+          credentials: 'same-origin',
           body: formData
         });
         const data = await res.json();
@@ -506,7 +531,7 @@
           e.target.reset();
           loadSponsors();
         } else {
-          messageDiv.innerHTML = `<div class="message error">${data.error || 'Failed to add sponsor'}</div>`;
+          messageDiv.innerHTML = `<div class="message error">${escapeHtml(data.error) || 'Failed to add sponsor'}</div>`;
         }
       } catch (err) {
         messageDiv.innerHTML = `<div class="message error">Network error</div>`;
@@ -523,9 +548,9 @@
         if (data.speakers && data.speakers.length > 0) {
           container.innerHTML = data.speakers.map(s => `
             <div class="card speaker-card">
-              <img src="${s.headshot_img_url}" alt="${s.first_name}">
-              <h3>${s.first_name}${s.middle_name ? ' ' + s.middle_name : ''}${s.last_name ? ' ' + s.last_name : ''}</h3>
-              <p>${s.bio.substring(0, 100)}...</p>
+              <img src="${escapeHtml(s.headshot_img_url)}" alt="${escapeHtml(s.first_name)}">
+              <h3>${escapeHtml(s.first_name)}${s.middle_name ? ' ' + escapeHtml(s.middle_name) : ''}${s.last_name ? ' ' + escapeHtml(s.last_name) : ''}</h3>
+              <p>${escapeHtml(s.bio.substring(0, 100))}...</p>
             </div>
           `).join('');
         } else {
@@ -546,9 +571,9 @@
         if (data.events && data.events.length > 0) {
           container.innerHTML = data.events.map(e => `
             <div class="card">
-              <img src="${e.thumbnail_url}" alt="${e.event_title}">
-              <h3>${e.event_title}</h3>
-              <p>${e.event_description.substring(0, 100)}...</p>
+              <img src="${escapeHtml(e.thumbnail_url)}" alt="${escapeHtml(e.event_title)}">
+              <h3>${escapeHtml(e.event_title)}</h3>
+              <p>${escapeHtml(e.event_description.substring(0, 100))}...</p>
             </div>
           `).join('');
         } else {
@@ -569,9 +594,9 @@
         if (data.sponsors && data.sponsors.length > 0) {
           container.innerHTML = data.sponsors.map(s => `
             <div class="card">
-              <img src="${s.sponsor_logo}" alt="${s.sponsor_name}" style="background: white; padding: 10px;">
-              <h3>${s.sponsor_name}</h3>
-              <p><span class="tag">${s.sponsor_tier}</span></p>
+              <img src="${escapeHtml(s.sponsor_logo)}" alt="${escapeHtml(s.sponsor_name)}" style="background: white; padding: 10px;">
+              <h3>${escapeHtml(s.sponsor_name)}</h3>
+              <p><span class="tag">${escapeHtml(s.sponsor_tier)}</span></p>
             </div>
           `).join('');
         } else {
@@ -587,7 +612,7 @@
       try {
         const queryString = buildRegistrationsQuery();
         const url = '/api/admin/registrations' + (queryString ? '?' + queryString : '');
-        const res = await fetch(url, { headers: authHeaders });
+        const res = await fetch(url, { credentials: 'same-origin' });
         const data = await res.json();
         const container = document.getElementById('registrations-list');
         registrationsData = data.registrations || [];
@@ -606,15 +631,15 @@
               </thead>
               <tbody>
                 ${registrationsData.map(r => `
-                  <tr class="registration-row" onclick="openModal('${r._id}')">
-                    <td>${r.first_name}${r.middle_name ? ' ' + r.middle_name : ''} ${r.last_name}</td>
-                    <td>${r.email}</td>
-                    <td>${r.academic_year}</td>
+                  <tr class="registration-row" onclick="openModal('${escapeHtml(r._id)}')">
+                    <td>${escapeHtml(r.first_name)}${r.middle_name ? ' ' + escapeHtml(r.middle_name) : ''} ${escapeHtml(r.last_name)}</td>
+                    <td>${escapeHtml(r.email)}</td>
+                    <td>${escapeHtml(r.academic_year)}</td>
                     <td>${getStatusBadge(r)}</td>
                     <td class="actions-cell" onclick="event.stopPropagation()">
-                      <button onclick="updateStatus('${r._id}', 'approve')" class="btn btn-small btn-approve-small" title="Approve">Approve</button>
-                      <button onclick="updateStatus('${r._id}', 'waitlist')" class="btn btn-small btn-waitlist-small" title="Waitlist">Waitlist</button>
-                      <button onclick="updateStatus('${r._id}', 'reject')" class="btn btn-small btn-reject-small" title="Reject">Reject</button>
+                      <button onclick="updateStatus('${escapeHtml(r._id)}', 'approve')" class="btn btn-small btn-approve-small" title="Approve">Approve</button>
+                      <button onclick="updateStatus('${escapeHtml(r._id)}', 'waitlist')" class="btn btn-small btn-waitlist-small" title="Waitlist">Waitlist</button>
+                      <button onclick="updateStatus('${escapeHtml(r._id)}', 'reject')" class="btn btn-small btn-reject-small" title="Reject">Reject</button>
                     </td>
                   </tr>
                 `).join('')}
@@ -648,6 +673,8 @@
 
       currentRegistrationId = id;
       const isStaff = r.academic_year === 'Staff';
+      const isEmployer = r.academic_year === 'Employer';
+      const isStudent = !isStaff && !isEmployer;
 
       // Set name
       const fullName = `${r.first_name}${r.middle_name ? ' ' + r.middle_name : ''} ${r.last_name}`;
@@ -657,7 +684,7 @@
       document.getElementById('modal-email').textContent = r.email;
       document.getElementById('modal-year').textContent = r.academic_year;
 
-      // Handle major/field of study for staff vs non-staff
+      // Handle major/field of study based on registration type
       const majorGroup = document.getElementById('modal-major-group');
       const fieldGroup = document.getElementById('modal-field-group');
 
@@ -669,36 +696,64 @@
         } else {
           fieldGroup.style.display = 'none';
         }
+      } else if (isEmployer) {
+        majorGroup.style.display = 'none';
+        fieldGroup.style.display = 'none';
       } else {
         majorGroup.style.display = 'block';
         fieldGroup.style.display = 'none';
         document.getElementById('modal-major').textContent = r.major || 'N/A';
       }
 
-      // Handle why_attend (not for staff)
+      // Handle employer-specific fields
+      const companyGroup = document.getElementById('modal-company-group');
+      const jobTitleGroup = document.getElementById('modal-job-title-group');
+      const companyWebsiteGroup = document.getElementById('modal-company-website-group');
+
+      if (isEmployer) {
+        companyGroup.style.display = 'block';
+        document.getElementById('modal-company').textContent = r.company_name || 'N/A';
+
+        jobTitleGroup.style.display = 'block';
+        document.getElementById('modal-job-title').textContent = r.job_title || 'N/A';
+
+        if (r.company_website) {
+          companyWebsiteGroup.style.display = 'block';
+          document.getElementById('modal-company-website').innerHTML =
+            `<a href="${escapeHtml(r.company_website)}" target="_blank" rel="noopener">${escapeHtml(r.company_website)}</a>`;
+        } else {
+          companyWebsiteGroup.style.display = 'none';
+        }
+      } else {
+        companyGroup.style.display = 'none';
+        jobTitleGroup.style.display = 'none';
+        companyWebsiteGroup.style.display = 'none';
+      }
+
+      // Handle why_attend (students only)
       const whyGroup = document.getElementById('modal-why-group');
-      if (isStaff || !r.why_attend) {
+      if (!isStudent || !r.why_attend) {
         whyGroup.style.display = 'none';
       } else {
         whyGroup.style.display = 'block';
         document.getElementById('modal-why').textContent = r.why_attend;
       }
 
-      // Handle relevant courses as pills (not for staff)
+      // Handle relevant courses as pills (students only)
       const coursesGroup = document.getElementById('modal-courses-group');
       const coursesContainer = document.getElementById('modal-courses');
-      if (isStaff || !r.relevant_courses || r.relevant_courses.length === 0) {
+      if (!isStudent || !r.relevant_courses || r.relevant_courses.length === 0) {
         coursesGroup.style.display = 'none';
       } else {
         coursesGroup.style.display = 'block';
         coursesContainer.innerHTML = r.relevant_courses.map(course =>
-          `<span class="pill">${course}</span>`
+          `<span class="pill">${escapeHtml(course)}</span>`
         ).join('');
       }
 
-      // Handle prior work experience (not for staff)
+      // Handle prior work experience (students only)
       const workGroup = document.getElementById('modal-work-group');
-      if (isStaff || !r.prior_work_exp) {
+      if (!isStudent || !r.prior_work_exp) {
         workGroup.style.display = 'none';
       } else {
         workGroup.style.display = 'block';
@@ -708,10 +763,10 @@
       // Set status
       document.getElementById('modal-status').innerHTML = getStatusBadge(r);
 
-      // Handle resume PDF viewer (not for staff)
+      // Handle resume PDF viewer (students only)
       const resumeContainer = document.getElementById('modal-resume-container');
       const resumeViewer = document.getElementById('modal-resume-viewer');
-      if (isStaff || !r.resume) {
+      if (!isStudent || !r.resume) {
         resumeContainer.style.display = 'none';
         resumeViewer.src = '';
       } else {
@@ -768,8 +823,8 @@
       try {
         const res = await fetch(`/api/admin/registrations/${id}`, {
           method: 'PATCH',
+          credentials: 'same-origin',
           headers: {
-            ...authHeaders,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(updateData)

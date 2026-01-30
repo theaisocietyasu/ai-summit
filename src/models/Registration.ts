@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 
-export type AcademicYear = 'Freshman' | 'Sophomore' | 'Junior' | 'Senior' | "Master's" | 'PhD' | 'Staff';
+export type AcademicYear = 'Freshman' | 'Sophomore' | 'Junior' | 'Senior' | "Master's" | 'PhD' | 'Staff' | 'Employer';
 
 export interface Registration {
   _id?: ObjectId;
@@ -16,6 +16,11 @@ export interface Registration {
   photo_release: boolean;
   relevant_courses?: string[];
   prior_work_exp?: string;
+  // Employer-specific fields
+  company_name?: string;
+  job_title?: string;
+  company_website?: string;
+  // Status fields
   is_waitlisted: boolean;
   is_approved: boolean;
   is_rejected: boolean;

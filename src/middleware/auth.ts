@@ -1,24 +1,31 @@
 import { Request, Response, NextFunction } from 'express';
+import { verifyToken } from '../services/jwt';
 
-const ADMIN_USERNAME = 'admin';
-const ADMIN_PASSWORD = 'admin';
-
+/**
+ * Admin authentication middleware
+ * Verifies JWT token from cookie or Authorization header
+ */
 export function adminAuth(req: Request, res: Response, next: NextFunction): void {
+  // Try to get token from multiple sources
   const authHeader = req.headers.authorization;
+  const authHeaderToken =
+    typeof authHeader === 'string' && authHeader.startsWith('Bearer ')
+      ? authHeader.slice('Bearer '.length).trim()
+      : undefined;
 
-  if (!authHeader || !authHeader.startsWith('Basic ')) {
+  const token = req.cookies?.auth_token || authHeaderToken;
+  if (!token) {
     res.status(401).json({ error: 'Authentication required' });
     return;
   }
 
-  const base64Credentials = authHeader.slice(6);
-  const credentials = Buffer.from(base64Credentials, 'base64').toString('utf-8');
-  const [username, password] = credentials.split(':');
-
-  if (username !== ADMIN_USERNAME || password !== ADMIN_PASSWORD) {
-    res.status(401).json({ error: 'Invalid credentials' });
+  const payload = verifyToken(token);
+  if (!payload) {
+    res.status(401).json({ error: 'Invalid or expired token' });
     return;
   }
 
+  // Attach user to request for downstream use
+  req.user = payload;
   next();
 }

@@ -45,14 +45,10 @@ export const RegistrationSchema = z
       .trim()
       .min(1, 'Email is required')
       .email('Invalid email format')
-      .max(MAX_STRING_LENGTH)
-      .refine(
-        (email) => ALLOWED_EMAIL_DOMAINS.some((domain) => email.toLowerCase().endsWith(domain)),
-        { message: 'Email must be from @asu.edu or @gmail.com domain' }
-      ),
-    academic_year: z.enum(['Freshman', 'Sophomore', 'Junior', 'Senior', "Master's", 'PhD', 'Staff'], {
+      .max(MAX_STRING_LENGTH),
+    academic_year: z.enum(['Freshman', 'Sophomore', 'Junior', 'Senior', "Master's", 'PhD', 'Staff', 'Employer'], {
       errorMap: () => ({
-        message: "Academic year must be Freshman, Sophomore, Junior, Senior, Master's, PhD, or Staff",
+        message: "Academic year must be Freshman, Sophomore, Junior, Senior, Master's, PhD, Staff, or Employer",
       }),
     }),
     major: z.string().trim().max(MAX_STRING_LENGTH).optional(),
@@ -65,8 +61,26 @@ export const RegistrationSchema = z
       .array(z.string().trim().max(100, 'Each course name must be 100 characters or less'))
       .optional(),
     prior_work_exp: z.string().trim().max(MAX_DESCRIPTION_LENGTH).optional(),
+    // Employer-specific fields
+    company_name: z.string().trim().max(MAX_STRING_LENGTH).optional(),
+    job_title: z.string().trim().max(MAX_STRING_LENGTH).optional(),
+    company_website: z.string().trim().max(MAX_STRING_LENGTH).optional(),
   })
   .superRefine((data, ctx) => {
+    // Email domain validation: Employers can use any domain, others must use @asu.edu or @gmail.com
+    if (data.academic_year !== 'Employer') {
+      const hasAllowedDomain = ALLOWED_EMAIL_DOMAINS.some((domain) =>
+        data.email.toLowerCase().endsWith(domain)
+      );
+      if (!hasAllowedDomain) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Email must be from @asu.edu or @gmail.com domain',
+          path: ['email'],
+        });
+      }
+    }
+
     if (data.academic_year === 'Staff') {
       // Staff requires field_of_study but not major
       if (!data.field_of_study || data.field_of_study.length === 0) {
@@ -76,8 +90,24 @@ export const RegistrationSchema = z
           path: ['field_of_study'],
         });
       }
+    } else if (data.academic_year === 'Employer') {
+      // Employer requires company_name and job_title
+      if (!data.company_name || data.company_name.length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Company name is required for Employers',
+          path: ['company_name'],
+        });
+      }
+      if (!data.job_title || data.job_title.length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Job title is required for Employers',
+          path: ['job_title'],
+        });
+      }
     } else {
-      // Non-staff requires major and why_attend
+      // Students require major and why_attend
       if (!data.major || data.major.length === 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
