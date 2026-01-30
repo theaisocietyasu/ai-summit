@@ -111,6 +111,14 @@
   </div>
 
   <script>
+    // HTML escape function to prevent XSS attacks
+    function escapeHtml(text) {
+      if (text == null) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
     const form = document.getElementById('registration-form');
     const whyAttend = document.getElementById('why_attend');
     const charCount = document.getElementById('char-count');
@@ -171,15 +179,15 @@
         const data = await res.json();
 
         if (res.ok) {
-          messageDiv.innerHTML = `<div class="message success">${data.message || 'Registration submitted successfully!'}</div>`;
+          messageDiv.innerHTML = `<div class="message success">${escapeHtml(data.message) || 'Registration submitted successfully!'}</div>`;
           form.reset();
           charCount.textContent = '0 / 500 characters';
         } else {
-          let errorMsg = data.error || 'Registration failed';
+          let errorMsg = escapeHtml(data.error) || 'Registration failed';
           if (data.errors) {
             errorMsg += '<ul style="margin-top: 10px; margin-left: 20px;">';
             for (const [field, msg] of Object.entries(data.errors)) {
-              errorMsg += `<li>${field}: ${msg}</li>`;
+              errorMsg += `<li>${escapeHtml(field)}: ${escapeHtml(msg)}</li>`;
             }
             errorMsg += '</ul>';
           }

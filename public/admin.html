@@ -281,6 +281,14 @@
   </div>
 
   <script>
+    // HTML escape function to prevent XSS attacks
+    function escapeHtml(text) {
+      if (text == null) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
     // Verify session is valid via httpOnly cookie on page load
     fetch('/api/auth/session', { credentials: 'same-origin' })
       .then(res => {
@@ -432,7 +440,7 @@
           messageDiv.innerHTML = `<div class="message success">Banner saved successfully!</div>`;
           e.target.reset();
         } else {
-          messageDiv.innerHTML = `<div class="message error">${data.error || 'Failed to save banner'}</div>`;
+          messageDiv.innerHTML = `<div class="message error">${escapeHtml(data.error) || 'Failed to save banner'}</div>`;
         }
       } catch (err) {
         messageDiv.innerHTML = `<div class="message error">Network error</div>`;
@@ -458,7 +466,7 @@
           e.target.reset();
           loadSpeakers();
         } else {
-          messageDiv.innerHTML = `<div class="message error">${data.error || 'Failed to add speaker'}</div>`;
+          messageDiv.innerHTML = `<div class="message error">${escapeHtml(data.error) || 'Failed to add speaker'}</div>`;
         }
       } catch (err) {
         messageDiv.innerHTML = `<div class="message error">Network error</div>`;
@@ -484,7 +492,7 @@
           e.target.reset();
           loadEvents();
         } else {
-          messageDiv.innerHTML = `<div class="message error">${data.error || 'Failed to add event'}</div>`;
+          messageDiv.innerHTML = `<div class="message error">${escapeHtml(data.error) || 'Failed to add event'}</div>`;
         }
       } catch (err) {
         messageDiv.innerHTML = `<div class="message error">Network error</div>`;
@@ -510,7 +518,7 @@
           e.target.reset();
           loadSponsors();
         } else {
-          messageDiv.innerHTML = `<div class="message error">${data.error || 'Failed to add sponsor'}</div>`;
+          messageDiv.innerHTML = `<div class="message error">${escapeHtml(data.error) || 'Failed to add sponsor'}</div>`;
         }
       } catch (err) {
         messageDiv.innerHTML = `<div class="message error">Network error</div>`;
@@ -527,9 +535,9 @@
         if (data.speakers && data.speakers.length > 0) {
           container.innerHTML = data.speakers.map(s => `
             <div class="card speaker-card">
-              <img src="${s.headshot_img_url}" alt="${s.first_name}">
-              <h3>${s.first_name}${s.middle_name ? ' ' + s.middle_name : ''}${s.last_name ? ' ' + s.last_name : ''}</h3>
-              <p>${s.bio.substring(0, 100)}...</p>
+              <img src="${escapeHtml(s.headshot_img_url)}" alt="${escapeHtml(s.first_name)}">
+              <h3>${escapeHtml(s.first_name)}${s.middle_name ? ' ' + escapeHtml(s.middle_name) : ''}${s.last_name ? ' ' + escapeHtml(s.last_name) : ''}</h3>
+              <p>${escapeHtml(s.bio.substring(0, 100))}...</p>
             </div>
           `).join('');
         } else {
@@ -550,9 +558,9 @@
         if (data.events && data.events.length > 0) {
           container.innerHTML = data.events.map(e => `
             <div class="card">
-              <img src="${e.thumbnail_url}" alt="${e.event_title}">
-              <h3>${e.event_title}</h3>
-              <p>${e.event_description.substring(0, 100)}...</p>
+              <img src="${escapeHtml(e.thumbnail_url)}" alt="${escapeHtml(e.event_title)}">
+              <h3>${escapeHtml(e.event_title)}</h3>
+              <p>${escapeHtml(e.event_description.substring(0, 100))}...</p>
             </div>
           `).join('');
         } else {
@@ -573,9 +581,9 @@
         if (data.sponsors && data.sponsors.length > 0) {
           container.innerHTML = data.sponsors.map(s => `
             <div class="card">
-              <img src="${s.sponsor_logo}" alt="${s.sponsor_name}" style="background: white; padding: 10px;">
-              <h3>${s.sponsor_name}</h3>
-              <p><span class="tag">${s.sponsor_tier}</span></p>
+              <img src="${escapeHtml(s.sponsor_logo)}" alt="${escapeHtml(s.sponsor_name)}" style="background: white; padding: 10px;">
+              <h3>${escapeHtml(s.sponsor_name)}</h3>
+              <p><span class="tag">${escapeHtml(s.sponsor_tier)}</span></p>
             </div>
           `).join('');
         } else {
@@ -610,15 +618,15 @@
               </thead>
               <tbody>
                 ${registrationsData.map(r => `
-                  <tr class="registration-row" onclick="openModal('${r._id}')">
-                    <td>${r.first_name}${r.middle_name ? ' ' + r.middle_name : ''} ${r.last_name}</td>
-                    <td>${r.email}</td>
-                    <td>${r.academic_year}</td>
+                  <tr class="registration-row" onclick="openModal('${escapeHtml(r._id)}')">
+                    <td>${escapeHtml(r.first_name)}${r.middle_name ? ' ' + escapeHtml(r.middle_name) : ''} ${escapeHtml(r.last_name)}</td>
+                    <td>${escapeHtml(r.email)}</td>
+                    <td>${escapeHtml(r.academic_year)}</td>
                     <td>${getStatusBadge(r)}</td>
                     <td class="actions-cell" onclick="event.stopPropagation()">
-                      <button onclick="updateStatus('${r._id}', 'approve')" class="btn btn-small btn-approve-small" title="Approve">Approve</button>
-                      <button onclick="updateStatus('${r._id}', 'waitlist')" class="btn btn-small btn-waitlist-small" title="Waitlist">Waitlist</button>
-                      <button onclick="updateStatus('${r._id}', 'reject')" class="btn btn-small btn-reject-small" title="Reject">Reject</button>
+                      <button onclick="updateStatus('${escapeHtml(r._id)}', 'approve')" class="btn btn-small btn-approve-small" title="Approve">Approve</button>
+                      <button onclick="updateStatus('${escapeHtml(r._id)}', 'waitlist')" class="btn btn-small btn-waitlist-small" title="Waitlist">Waitlist</button>
+                      <button onclick="updateStatus('${escapeHtml(r._id)}', 'reject')" class="btn btn-small btn-reject-small" title="Reject">Reject</button>
                     </td>
                   </tr>
                 `).join('')}
@@ -696,7 +704,7 @@
       } else {
         coursesGroup.style.display = 'block';
         coursesContainer.innerHTML = r.relevant_courses.map(course =>
-          `<span class="pill">${course}</span>`
+          `<span class="pill">${escapeHtml(course)}</span>`
         ).join('');
       }
 

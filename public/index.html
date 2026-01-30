@@ -64,6 +64,14 @@
   </div>
 
   <script>
+    // HTML escape function to prevent XSS attacks
+    function escapeHtml(text) {
+      if (text == null) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
     async function loadBanner() {
       try {
         const res = await fetch('/api/home');
@@ -151,9 +159,9 @@
         if (data.speakers && data.speakers.length > 0) {
           container.innerHTML = data.speakers.map(speaker => `
             <div class="card speaker-card">
-              <img src="${speaker.headshot_img_url}" alt="${speaker.first_name}">
-              <h3>${speaker.first_name}${speaker.middle_name ? ' ' + speaker.middle_name : ''}${speaker.last_name ? ' ' + speaker.last_name : ''}</h3>
-              <p>${speaker.bio}</p>
+              <img src="${escapeHtml(speaker.headshot_img_url)}" alt="${escapeHtml(speaker.first_name)}">
+              <h3>${escapeHtml(speaker.first_name)}${speaker.middle_name ? ' ' + escapeHtml(speaker.middle_name) : ''}${speaker.last_name ? ' ' + escapeHtml(speaker.last_name) : ''}</h3>
+              <p>${escapeHtml(speaker.bio)}</p>
             </div>
           `).join('');
         } else {
@@ -182,12 +190,12 @@
         if (data.events && data.events.length > 0) {
           container.innerHTML = data.events.map(event => `
             <div class="card">
-              <img src="${event.thumbnail_url}" alt="${event.event_title}">
-              <h3>${event.event_title}</h3>
-              <p>${event.event_description}</p>
+              <img src="${escapeHtml(event.thumbnail_url)}" alt="${escapeHtml(event.event_title)}">
+              <h3>${escapeHtml(event.event_title)}</h3>
+              <p>${escapeHtml(event.event_description)}</p>
               ${event.tags && event.tags.length > 0 ? `
                 <div class="tags">
-                  ${event.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                  ${event.tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
                 </div>
               ` : ''}
             </div>
@@ -229,7 +237,7 @@
                   <div class="sponsor-logos">
                     ${tierSponsors.map(sponsor => `
                       <div class="sponsor-logo">
-                        <img src="${sponsor.sponsor_logo}" alt="${sponsor.sponsor_name}" title="${sponsor.sponsor_name}">
+                        <img src="${escapeHtml(sponsor.sponsor_logo)}" alt="${escapeHtml(sponsor.sponsor_name)}" title="${escapeHtml(sponsor.sponsor_name)}">
                       </div>
                     `).join('')}
                   </div>
