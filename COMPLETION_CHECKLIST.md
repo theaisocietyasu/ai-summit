@@ -6,8 +6,8 @@
 - [x] TypeScript configured with strict mode
 - [x] CSS Modules configured
 - [x] Path aliases configured in tsconfig.json
-- [x] .env.local created with API_URL
-- [x] package.json updated (Express removed, Next.js added)
+- [x] .env.local created with required env vars
+- [x] package.json updated for Next.js + API routes
 
 ## ✅ Layout & Navigation
 
@@ -29,15 +29,14 @@
   - [x] Form with validation
   - [x] Dynamic field visibility (student/staff)
   - [x] File upload support
-  - [x] Form submission to backend
+  - [x] Form submission to /api/register
 - [x] Navigation links between pages
 
 ## ✅ Admin Pages
 
 - [x] Login page (/login) created
-  - [x] Username/password form
-  - [x] Basic auth implementation
-  - [x] localStorage persistence
+  - [x] Discord OAuth sign-in
+  - [x] Cookie-based session
   - [x] Redirect to admin on success
   - [x] Error handling
 - [x] Admin panel page (/admin) created
@@ -124,11 +123,11 @@
 ## ✅ API Integration
 
 - [x] API client created (lib/api.ts)
-- [x] GET /api/banner implemented
+- [x] GET /api/home implemented
 - [x] GET /api/speakers implemented
 - [x] GET /api/events implemented
 - [x] GET /api/sponsors implemented
-- [x] GET /api/registrations implemented
+- [x] GET /api/admin/registrations implemented
 - [x] POST /api/admin/banner integrated
 - [x] POST /api/admin/speaker integrated
 - [x] PUT /api/admin/speaker/:id integrated
@@ -140,19 +139,18 @@
 - [x] PUT /api/admin/sponsor/:id integrated
 - [x] DELETE /api/admin/sponsor/:id integrated
 - [x] PUT /api/admin/registration/:id/status integrated
-- [x] POST /api/registration integrated
+- [x] POST /api/register integrated
 - [x] GET /api/file/:id for resume integrated
-- [x] Authorization header handling
+- [x] Requests rely on cookie session (no client auth headers)
 
 ## ✅ Authentication & Security
 
-- [x] Basic auth implementation
-- [x] Base64 encoding of credentials
+- [x] Discord OAuth implemented
+- [x] Session stored in HTTP-only cookie
 - [x] Protected admin routes
 - [x] Redirect to login if not authenticated
-- [x] Logout clears localStorage
-- [x] Authorization headers on requests
-- [x] Login validation against backend
+- [x] Logout clears session cookie
+- [x] Per-request role enforcement
 
 ## ✅ UI/UX Features
 
@@ -208,15 +206,12 @@
 
 - [x] Old loose component files deleted
 - [x] Only organized folders remain
-- [x] Old public HTML files kept as reference
+- [x] Legacy public HTML entrypoints removed
 
-## 🔲 Backend Setup (Not Part of Migration)
+## 🔲 Environment Setup (Required)
 
-- [ ] Express API running on port 3001
 - [ ] MongoDB connected
-- [ ] GridFS configured for file storage
-- [ ] Admin endpoints secured
-- [ ] CORS configured if needed
+- [ ] Required env vars set (Discord + MongoDB + JWT secret)
 
 ## 🔲 Testing (Recommended Next Steps)
 
@@ -276,13 +271,12 @@
 
 🟢 **Ready for Testing** - All features implemented
 🟢 **Ready for Development** - Can add more features
-🟡 **Backend Required** - Express API needed to run
 🟡 **Production Ready** - Pending testing and deployment
 
 ### Next Immediate Actions
 
-1. Start Express backend on port 3001
-2. Run `npm run dev` to start Next.js
+1. Run `npm run dev` to start Next.js
+2. Sign in via `/login` (Discord OAuth)
 3. Test all pages and functionality
 4. Deploy when ready
 

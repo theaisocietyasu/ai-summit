@@ -21,10 +21,6 @@ interface RegistrationDisplay extends Registration {
   status: "Pending" | "Approved" | "Waitlisted" | "Rejected";
 }
 
-interface RegistrationsSectionProps {
-  authHeaders: Record<string, string>;
-}
-
 const STATUS_OPTIONS = [
   "Pending",
   "Approved",
@@ -32,9 +28,7 @@ const STATUS_OPTIONS = [
   "Rejected",
 ] as const;
 
-export default function RegistrationsSection({
-  authHeaders,
-}: RegistrationsSectionProps) {
+export default function RegistrationsSection() {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [displayRegistrations, setDisplayRegistrations] = useState<
     RegistrationDisplay[]
@@ -98,16 +92,14 @@ export default function RegistrationsSection({
       }
       
       // Map frontend sort to backend field names
-      let backendSortBy = sortBy;
+      let backendSortBy: string = sortBy;
       if (sortBy === 'name') backendSortBy = 'first_name';
       if (sortBy === 'year') backendSortBy = 'academic_year';
       
       params.append('sortBy', backendSortBy);
       params.append('sortOrder', sortOrder);
 
-      const res = await fetch(`/api/admin/registrations?${params.toString()}`, {
-        headers: authHeaders,
-      });
+      const res = await fetch(`/api/admin/registrations?${params.toString()}`);
       
       if (res.ok) {
         const data = await res.json();
@@ -125,7 +117,7 @@ export default function RegistrationsSection({
     } finally {
       setLoading(false);
     }
-  }, [authHeaders, currentPage, searchTerm, statusFilter, yearFilter, sortBy, sortOrder]);
+  }, [currentPage, searchTerm, statusFilter, yearFilter, sortBy, sortOrder]);
 
   useEffect(() => {
     fetchRegistrations();
@@ -166,7 +158,6 @@ export default function RegistrationsSection({
         {
           method: "PUT",
           headers: {
-            ...authHeaders,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ status: newStatus }),
@@ -403,7 +394,6 @@ export default function RegistrationsSection({
         <RegistrationModal
           registration={selectedRegistration}
           onClose={() => setShowModal(false)}
-          authHeaders={authHeaders}
         />
       )}
     </div>

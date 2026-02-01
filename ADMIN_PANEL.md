@@ -62,10 +62,11 @@ The admin panel has been successfully migrated from the original HTML/JavaScript
 
 ### Authentication
 
-- Basic Auth using username and password
-- Credentials stored in `localStorage` as Base64 encoded string
-- Automatic redirect to login page if not authenticated
-- Logout functionality clears credentials and redirects to login
+- Discord OAuth login
+- Admin session stored in an HTTP-only cookie
+- Automatic redirect to `/login` if not authenticated
+- Logout calls `POST /api/auth/logout` and redirects to `/login`
+- Every admin request re-checks Discord role membership (no "cached" role authorization)
 
 ### File Upload
 
@@ -76,7 +77,7 @@ The admin panel has been successfully migrated from the original HTML/JavaScript
   - Sponsor logos
 - Supports resume uploads (PDF)
 - Uses FormData API for multipart requests
-- Files sent with Authorization headers
+- Requests rely on the cookie-based admin session (no client-sent auth headers)
 
 ### Data Management
 
@@ -107,7 +108,10 @@ The admin panel has been successfully migrated from the original HTML/JavaScript
 
 ### Authentication
 
-- `GET /api/admin/validate` - Validate admin credentials
+- `GET /api/auth/discord` - Start Discord sign-in
+- `GET /api/auth/discord/callback` - OAuth callback
+- `GET /api/auth/session` - Check current session
+- `POST /api/auth/logout` - Log out
 
 ### Banner
 
@@ -136,21 +140,15 @@ The admin panel has been successfully migrated from the original HTML/JavaScript
 
 ### Registrations
 
-- `GET /api/registrations` - Get all registrations
+- `GET /api/admin/registrations` - Get all registrations
 - `PUT /api/admin/registration/:id/status` - Update registration status
-- `GET /api/file/:id` - Get file/resume for display
+- `GET /api/file/:id` - Get resume PDF for display (admin only)
 
 ## Component Props
 
 ### Section Components
 
-All section components accept:
-
-```typescript
-{
-  authHeaders: Record<string, string>; // Authorization headers
-}
-```
+Section components do not require auth props; requests rely on the cookie-based session.
 
 ### RegistrationModal
 
@@ -158,7 +156,6 @@ All section components accept:
 {
   registration: Registration      // Registration object to display
   onClose: () => void             // Callback when modal should close
-  authHeaders: Record<string, string>  // Authorization headers
 }
 ```
 
@@ -214,8 +211,7 @@ Potential improvements:
 ## Notes
 
 - All file uploads use multipart/form-data
-- Authorization header format: `Basic ${base64(username:password)}`
 - Resume PDFs are embedded using iframe viewer
 - Responsive design optimized for desktop and tablet viewing
-- Database operations are handled entirely by Express backend
+- API routes and pages are served by Next.js
 - GridFS is used for file storage on MongoDB

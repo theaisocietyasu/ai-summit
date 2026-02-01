@@ -10,10 +10,6 @@ interface Sponsor {
   sponsorLogo?: string;
 }
 
-interface AdminSponsorsSectionProps {
-  authHeaders: Record<string, string>;
-}
-
 const TIER_OPTIONS: Array<{ value: Sponsor["sponsorTier"]; label: string }> = [
   { value: "platinum", label: "Platinum" },
   { value: "gold", label: "Gold" },
@@ -21,9 +17,7 @@ const TIER_OPTIONS: Array<{ value: Sponsor["sponsorTier"]; label: string }> = [
   { value: "bronze", label: "Bronze" },
 ];
 
-export default function AdminSponsorsSection({
-  authHeaders,
-}: AdminSponsorsSectionProps) {
+export default function AdminSponsorsSection() {
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
   const [message, setMessage] = useState<{
     type: "success" | "error";
@@ -42,8 +36,21 @@ export default function AdminSponsorsSection({
     try {
       const res = await fetch("/api/sponsors");
       if (res.ok) {
-        const data = await res.json();
-        setSponsors(data);
+        const payload = await res.json();
+        const rawSponsors = Array.isArray(payload)
+          ? payload
+          : (payload?.sponsors ?? payload?.data?.sponsors);
+
+        const normalized: Sponsor[] = Array.isArray(rawSponsors)
+          ? rawSponsors.map((s: any) => ({
+              _id: s?._id,
+              sponsorName: s?.sponsorName ?? s?.sponsor_name ?? "",
+              sponsorTier: (s?.sponsorTier ?? s?.sponsor_tier ?? "platinum") as Sponsor["sponsorTier"],
+              sponsorLogo: s?.sponsorLogo ?? s?.sponsor_logo,
+            }))
+          : [];
+
+        setSponsors(normalized);
       }
     } catch (error) {
       console.error("Error fetching sponsors:", error);
@@ -89,7 +96,6 @@ export default function AdminSponsorsSection({
 
       const res = await fetch(url, {
         method,
-        headers: authHeaders,
         body: formDataObj,
       });
 
@@ -133,7 +139,6 @@ export default function AdminSponsorsSection({
     try {
       const res = await fetch(`/api/admin/sponsor/${id}`, {
         method: "DELETE",
-        headers: authHeaders,
       });
 
       if (res.ok) {

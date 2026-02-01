@@ -12,13 +12,7 @@ interface Speaker {
   speakerImage?: string;
 }
 
-interface AdminSpeakersSectionProps {
-  authHeaders: Record<string, string>;
-}
-
-export default function AdminSpeakersSection({
-  authHeaders,
-}: AdminSpeakersSectionProps) {
+export default function AdminSpeakersSection() {
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
   const [message, setMessage] = useState<{
     type: "success" | "error";
@@ -39,8 +33,23 @@ export default function AdminSpeakersSection({
     try {
       const res = await fetch("/api/speakers");
       if (res.ok) {
-        const data = await res.json();
-        setSpeakers(data);
+        const payload = await res.json();
+        const rawSpeakers = Array.isArray(payload)
+          ? payload
+          : (payload?.speakers ?? payload?.data?.speakers);
+
+        const normalized: Speaker[] = Array.isArray(rawSpeakers)
+          ? rawSpeakers.map((s: any) => ({
+              _id: s?._id,
+              firstName: s?.firstName ?? s?.first_name ?? "",
+              middleName: s?.middleName ?? s?.middle_name ?? "",
+              lastName: s?.lastName ?? s?.last_name ?? "",
+              bio: s?.bio ?? "",
+              speakerImage: s?.speakerImage ?? s?.headshot_img_url,
+            }))
+          : [];
+
+        setSpeakers(normalized);
       }
     } catch (error) {
       console.error("Error fetching speakers:", error);
@@ -87,7 +96,6 @@ export default function AdminSpeakersSection({
 
       const res = await fetch(url, {
         method,
-        headers: authHeaders,
         body: formDataObj,
       });
 
@@ -131,7 +139,6 @@ export default function AdminSpeakersSection({
     try {
       const res = await fetch(`/api/admin/speaker/${id}`, {
         method: "DELETE",
-        headers: authHeaders,
       });
 
       if (res.ok) {

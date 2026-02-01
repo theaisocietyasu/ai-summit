@@ -18,13 +18,11 @@ interface Registration {
 interface RegistrationModalProps {
   registration: Registration;
   onClose: () => void;
-  authHeaders: Record<string, string>;
 }
 
 export default function RegistrationModal({
   registration,
   onClose,
-  authHeaders,
 }: RegistrationModalProps) {
   const [pdfLoading, setPdfLoading] = useState(false);
   const [showPdf, setShowPdf] = useState(false);

@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Successfully migrated the AI Summit frontend from vanilla HTML/JavaScript/CSS to a modern **Next.js 14** application with **React 18** and **TypeScript 5.3**. The Express backend (MongoDB + GridFS) remains unchanged and operates independently on port 3001.
+The AI Summit site is implemented as a single **Next.js App Router** application (React + TypeScript) with **built-in API routes** for data access, file uploads/streaming, and admin operations.
 
 ## Project Structure
 
@@ -39,11 +39,7 @@ Successfully migrated the AI Summit frontend from vanilla HTML/JavaScript/CSS to
 │       ├── RegistrationsSection/    # Registration management
 │       └── RegistrationModal/       # Registration details modal
 ├── public/
-│   ├── admin.html              # Original admin panel (reference)
-│   ├── index.html              # Original home page (reference)
-│   ├── login.html              # Original login (reference)
-│   ├── register.html           # Original registration (reference)
-│   └── styles.css              # Original global styles (reference)
+│   └── styles.css              # Static assets (if any)
 ├── package.json                # Dependencies and scripts
 ├── tsconfig.json               # TypeScript configuration
 ├── next.config.js              # Next.js configuration
@@ -59,17 +55,16 @@ Successfully migrated the AI Summit frontend from vanilla HTML/JavaScript/CSS to
 - **TypeScript 5.3** - Type safety
 - **CSS Modules** - Component-scoped styling
 
-### Backend (Unchanged)
+### Backend (API Routes)
 
-- **Express.js** - Web server
+- **Next.js Route Handlers** - Server-side API endpoints under `/app/api/*`
 - **MongoDB** - Database
 - **GridFS** - File storage for uploads
-- **Port 3001** - Backend API server
 
 ### Configuration
 
 - **Deployed On**: Vercel/Local Dev
-- **API URL**: `http://localhost:3001` (configured in `.env.local`)
+- **API URL**: Same-origin `/api/*` by default (optional `NEXT_PUBLIC_API_URL` override)
 - **Node Version**: 18+ recommended
 
 ## Completed Features
@@ -93,10 +88,9 @@ Successfully migrated the AI Summit frontend from vanilla HTML/JavaScript/CSS to
 ### ✅ Admin Panel
 
 1. **Login Page** (`/app/login/page.tsx`)
-   - Username/password authentication
-   - Basic Auth with Base64 encoding
-   - localStorage persistence
-   - Error message display
+   - Discord OAuth sign-in
+   - Cookie-based admin session
+   - Per-request Discord role enforcement
 
 2. **Admin Dashboard** (`/app/admin/page.tsx`)
    - Protected route with auth redirect
@@ -163,17 +157,16 @@ Successfully migrated the AI Summit frontend from vanilla HTML/JavaScript/CSS to
 - `POST /api/admin/sponsor` - Create sponsor
 - `PUT /api/admin/sponsor/:id` - Update sponsor
 - `DELETE /api/admin/sponsor/:id` - Delete sponsor
-- `POST /api/registration` - Submit registration form
+- `POST /api/register` - Submit registration form
 - `PUT /api/admin/registration/:id/status` - Update status
-- `GET /api/file/:id` - Retrieve files (resume, images)
+- `GET /api/file/:id` - Retrieve a file (resumes require admin)
 
 ### ✅ Authentication & Security
 
-- Basic Auth implementation (username:password in Base64)
-- Protected admin routes with redirect
-- Authorization headers on admin requests
-- Credentials stored securely in localStorage
-- Login validation against backend
+- Discord OAuth sign-in
+- Admin session stored in an HTTP-only cookie
+- Admin routes are protected server-side and client-side (redirect to `/login`)
+- Every admin request verifies Discord role membership (no cached role authorization)
 
 ### ✅ UI/UX Features
 
@@ -217,7 +210,18 @@ Successfully migrated the AI Summit frontend from vanilla HTML/JavaScript/CSS to
 ### `.env.local`
 
 ```
-NEXT_PUBLIC_API_URL=http://localhost:3001
+# Optional: override API base (same-origin `/api` by default)
+# NEXT_PUBLIC_API_URL=https://your-domain.com/api
+
+# Required for DB + admin auth
+MONGODB_URI=...
+JWT_SECRET=...
+DISCORD_CLIENT_ID=...
+DISCORD_CLIENT_SECRET=...
+DISCORD_REDIRECT_URI=...
+DISCORD_GUILD_ID=...
+DISCORD_BOT_TOKEN=...
+ALLOWED_LOGIN_ROLE_IDS=...
 ```
 
 ### `tsconfig.json` Path Aliases
@@ -260,32 +264,31 @@ npm start
 
 ## Key Migration Decisions
 
-1. **Kept Express Backend Separate** - No need to refactor working backend code
+1. **Single Next.js App** - Pages and API routes in one deployable unit
 2. **Used Next.js App Router** - Modern approach with better file-based routing
 3. **CSS Modules Over Tailwind** - Fine-grained styling control
 4. **TypeScript Strict Mode** - Catch errors early
 5. **Component Collocation** - Easier to manage and scale
-6. **Environment Variables** - Configure API endpoint without rebuilding
+6. **Cookie-based Admin Session** - Works with same-origin requests and Vercel deployments
 
 ## Testing Endpoints
 
 ### Test Banner Fetch
 
 ```bash
-curl http://localhost:3001/api/banner
+curl http://localhost:3000/api/home
 ```
 
 ### Test Speaker List
 
 ```bash
-curl http://localhost:3001/api/speakers
+curl http://localhost:3000/api/speakers
 ```
 
-### Test Admin Login
+### Test Admin Session
 
 ```bash
-curl -H "Authorization: Basic $(echo -n 'admin:password' | base64)" \
-  http://localhost:3001/api/admin/validate
+curl -i http://localhost:3000/api/auth/session
 ```
 
 ## Common Issues & Solutions
@@ -296,15 +299,15 @@ curl -H "Authorization: Basic $(echo -n 'admin:password' | base64)" \
 
 ### Issue: Image not loading from backend
 
-**Solution**: Ensure backend is running on port 3001 and NEXT_PUBLIC_API_URL is correct
+**Solution**: Ensure the Next.js dev server is running and image URLs point to `/api/files/{fileId}`.
 
 ### Issue: Login redirect loop
 
-**Solution**: Check that localStorage.getItem('adminAuth') works and backend validates auth
+**Solution**: Confirm Discord OAuth env vars are set and `/api/auth/session` returns `200` after signing in.
 
 ### Issue: File upload fails
 
-**Solution**: Ensure FormData is properly constructed and Authorization headers are included
+**Solution**: Ensure the request is `multipart/form-data` and the browser includes the session cookie. For resumes, verify the file is a PDF and ≤ 5MB.
 
 ## Performance Optimizations
 
@@ -316,9 +319,9 @@ curl -H "Authorization: Basic $(echo -n 'admin:password' | base64)" \
 
 ## Security Considerations
 
-- Basic Auth credentials sent over HTTPS only (in production)
-- No sensitive data in localStorage besides auth token
-- CORS configured on backend if needed
+- Admin session is HTTP-only cookie (not readable by JS)
+- Resumes are restricted to admins and served with `Cache-Control: private, no-store`
+- Admin endpoints enforce roles per request
 - Input validation on form submissions
 - XSS prevention through React's built-in escaping
 
@@ -389,4 +392,4 @@ The migration successfully transforms the AI Summit frontend into a modern, main
 
 **Status**: ✅ Migration Complete
 **Ready for Production**: Yes
-**Requires Backend**: Yes (Express on port 3001)
+**Requires Backend**: No separate backend (API routes are part of the Next.js app)

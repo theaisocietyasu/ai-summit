@@ -74,7 +74,7 @@
 
 ```typescript
 {
-  authHeaders: Record<string, string>;
+  // no props (requests rely on cookie-based admin session)
 }
 ```
 
@@ -103,7 +103,7 @@
 
 ```typescript
 {
-  authHeaders: Record<string, string>;
+  // no props (requests rely on cookie-based admin session)
 }
 ```
 
@@ -139,7 +139,7 @@
 
 ```typescript
 {
-  authHeaders: Record<string, string>;
+  // no props (requests rely on cookie-based admin session)
 }
 ```
 
@@ -176,7 +176,7 @@
 
 ```typescript
 {
-  authHeaders: Record<string, string>;
+  // no props (requests rely on cookie-based admin session)
 }
 ```
 
@@ -212,7 +212,7 @@
 
 ```typescript
 {
-  authHeaders: Record<string, string>;
+  // no props (requests rely on cookie-based admin session)
 }
 ```
 
@@ -231,7 +231,7 @@
 
 **API Endpoints**:
 
-- `GET /api/registrations` - Fetch all registrations
+- `GET /api/admin/registrations` - Fetch all registrations
 - `PUT /api/admin/registration/:id/status` - Update status
 
 **Files**:
@@ -250,7 +250,6 @@
 {
   registration: Registration
   onClose: () => void
-  authHeaders: Record<string, string>
 }
 ```
 
@@ -361,12 +360,12 @@
 - Admin dashboard
 - Authentication check
 - Section routing
-- Passes authHeaders to child components
+- Relies on cookie-based admin session (no auth props)
 
 ### 4. Login (`/app/login/page.tsx`)
 
 - Admin login form
-- Basic auth validation
+- Discord OAuth sign-in
 - Redirect on success
 - Error messaging
 
