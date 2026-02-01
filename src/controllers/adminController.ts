@@ -241,7 +241,12 @@ export async function getRegistrations(
 ): Promise<void> {
   try {
     const db = getDb();
-    const { search, status, academicYear, sortBy, sortOrder } = req.query;
+    const { search, status, academicYear, sortBy, sortOrder, page, limit } = req.query;
+
+    // Parse pagination parameters
+    const pageNum = page && typeof page === 'string' ? parseInt(page, 10) : 1;
+    const limitNum = limit && typeof limit === 'string' ? parseInt(limit, 10) : 50;
+    const skip = (pageNum - 1) * limitNum;
 
     // Build match stage for filtering
     const matchConditions: Record<string, unknown>[] = [];
@@ -385,12 +390,33 @@ export async function getRegistrations(
       },
     });
 
+    // Get total count before pagination
+    const countPipeline = [...pipeline, { $count: 'total' }];
+    const countResult = await db
+      .collection<Registration>('registrations')
+      .aggregate(countPipeline)
+      .toArray();
+    
+    const totalCount = countResult.length > 0 ? countResult[0].total : 0;
+
+    // Add pagination
+    pipeline.push({ $skip: skip });
+    pipeline.push({ $limit: limitNum });
+
     const registrations = await db
       .collection<Registration>('registrations')
       .aggregate(pipeline)
       .toArray();
 
-    res.json({ registrations });
+    res.json({ 
+      registrations,
+      pagination: {
+        currentPage: pageNum,
+        totalPages: Math.ceil(totalCount / limitNum),
+        totalCount,
+        pageSize: limitNum
+      }
+    });
   } catch (error) {
     next(error);
   }

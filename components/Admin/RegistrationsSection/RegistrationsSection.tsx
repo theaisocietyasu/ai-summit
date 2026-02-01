@@ -6,12 +6,19 @@ import RegistrationModal from "../RegistrationModal";
 
 interface Registration {
   _id: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  middle_name?: string;
+  last_name: string;
   email: string;
-  academicYear: string;
-  status: "Pending" | "Approved" | "Waitlisted" | "Rejected";
+  academic_year: string;
+  is_approved: boolean;
+  is_waitlisted: boolean;
+  is_rejected: boolean;
   resume?: string;
+}
+
+interface RegistrationDisplay extends Registration {
+  status: "Pending" | "Approved" | "Waitlisted" | "Rejected";
 }
 
 interface RegistrationsSectionProps {
@@ -29,8 +36,8 @@ export default function RegistrationsSection({
   authHeaders,
 }: RegistrationsSectionProps) {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
-  const [filteredRegistrations, setFilteredRegistrations] = useState<
-    Registration[]
+  const [displayRegistrations, setDisplayRegistrations] = useState<
+    RegistrationDisplay[]
   >([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<{
@@ -46,18 +53,71 @@ export default function RegistrationsSection({
   );
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const pageSize = 50;
+
+  const getStatus = (reg: Registration): RegistrationDisplay["status"] => {
+    if (reg.is_approved) return "Approved";
+    if (reg.is_waitlisted) return "Waitlisted";
+    if (reg.is_rejected) return "Rejected";
+    return "Pending";
+  };
+
+  const transformRegistrations = (regs: Registration[]): RegistrationDisplay[] => {
+    return regs.map(reg => ({
+      ...reg,
+      status: getStatus(reg)
+    }));
+  };
+
   const [selectedRegistration, setSelectedRegistration] =
-    useState<Registration | null>(null);
+    useState<RegistrationDisplay | null>(null);
   const [showModal, setShowModal] = useState(false);
 
   const fetchRegistrations = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/registrations");
+      // Build query parameters
+      const params = new URLSearchParams();
+      params.append('page', currentPage.toString());
+      params.append('limit', pageSize.toString());
+      
+      if (searchTerm) {
+        params.append('search', searchTerm);
+      }
+      
+      if (statusFilter.size > 0) {
+        params.append('status', Array.from(statusFilter).join(','));
+      }
+      
+      if (yearFilter.size > 0) {
+        params.append('academicYear', Array.from(yearFilter).join(','));
+      }
+      
+      // Map frontend sort to backend field names
+      let backendSortBy = sortBy;
+      if (sortBy === 'name') backendSortBy = 'first_name';
+      if (sortBy === 'year') backendSortBy = 'academic_year';
+      
+      params.append('sortBy', backendSortBy);
+      params.append('sortOrder', sortOrder);
+
+      const res = await fetch(`/api/admin/registrations?${params.toString()}`, {
+        headers: authHeaders,
+      });
+      
       if (res.ok) {
         const data = await res.json();
-        setRegistrations(data);
-        applyFiltersAndSort(data);
+        setRegistrations(data.registrations);
+        setDisplayRegistrations(transformRegistrations(data.registrations));
+        
+        if (data.pagination) {
+          setTotalPages(data.pagination.totalPages);
+          setTotalCount(data.pagination.totalCount);
+        }
       }
     } catch (error) {
       console.error("Error fetching registrations:", error);
@@ -65,82 +125,16 @@ export default function RegistrationsSection({
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [authHeaders, currentPage, searchTerm, statusFilter, yearFilter, sortBy, sortOrder]);
 
   useEffect(() => {
     fetchRegistrations();
   }, [fetchRegistrations]);
 
-  const applyFiltersAndSort = useCallback(
-    (regs: Registration[]) => {
-      let filtered = [...regs];
-
-      // Search filter
-      if (searchTerm) {
-        const term = searchTerm.toLowerCase();
-        filtered = filtered.filter(
-          (r) =>
-            r.firstName.toLowerCase().includes(term) ||
-            r.lastName.toLowerCase().includes(term) ||
-            r.email.toLowerCase().includes(term),
-        );
-      }
-
-      // Status filter
-      if (statusFilter.size > 0) {
-        filtered = filtered.filter((r) => statusFilter.has(r.status));
-      }
-
-      // Year filter
-      if (yearFilter.size > 0) {
-        filtered = filtered.filter((r) => yearFilter.has(r.academicYear));
-      }
-
-      // Sort
-      filtered.sort((a, b) => {
-        let aVal: string | number = "";
-        let bVal: string | number = "";
-
-        switch (sortBy) {
-          case "name":
-            aVal = `${a.firstName} ${a.lastName}`.toLowerCase();
-            bVal = `${b.firstName} ${b.lastName}`.toLowerCase();
-            break;
-          case "email":
-            aVal = a.email.toLowerCase();
-            bVal = b.email.toLowerCase();
-            break;
-          case "year":
-            aVal = a.academicYear;
-            bVal = b.academicYear;
-            break;
-          case "status":
-            aVal = a.status;
-            bVal = b.status;
-            break;
-        }
-
-        if (aVal < bVal) return sortOrder === "asc" ? -1 : 1;
-        if (aVal > bVal) return sortOrder === "asc" ? 1 : -1;
-        return 0;
-      });
-
-      setFilteredRegistrations(filtered);
-    },
-    [searchTerm, statusFilter, yearFilter, sortBy, sortOrder],
-  );
-
+  // Reset to page 1 when filters change
   useEffect(() => {
-    applyFiltersAndSort(registrations);
-  }, [
-    searchTerm,
-    statusFilter,
-    yearFilter,
-    sortBy,
-    sortOrder,
-    applyFiltersAndSort,
-    registrations,
-  ]);
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter, yearFilter, sortBy, sortOrder]);
 
   const toggleStatusFilter = (status: string) => {
     const newFilter = new Set(statusFilter);
@@ -181,14 +175,8 @@ export default function RegistrationsSection({
 
       if (res.ok) {
         setMessage({ type: "success", text: `Status updated to ${newStatus}` });
-        setRegistrations((prev) =>
-          prev.map((r) =>
-            r._id === registrationId
-              ? { ...r, status: newStatus as Registration["status"] }
-              : r,
-          ),
-        );
-        applyFiltersAndSort(registrations);
+        // Refetch current page to get updated data
+        fetchRegistrations();
       } else {
         setMessage({ type: "error", text: "Failed to update status" });
       }
@@ -198,7 +186,7 @@ export default function RegistrationsSection({
   };
 
   const getUniqueYears = () => {
-    const years = new Set(registrations.map((r) => r.academicYear));
+    const years = new Set(registrations.map((r) => r.academic_year));
     return Array.from(years).sort();
   };
 
@@ -307,7 +295,7 @@ export default function RegistrationsSection({
       </div>
 
       <div className={styles.tableContainer}>
-        {filteredRegistrations.length > 0 ? (
+        {displayRegistrations.length > 0 ? (
           <table className={styles.table}>
             <thead>
               <tr>
@@ -319,11 +307,11 @@ export default function RegistrationsSection({
               </tr>
             </thead>
             <tbody>
-              {filteredRegistrations.map((registration) => (
+              {displayRegistrations.map((registration) => (
                 <tr key={registration._id}>
-                  <td>{`${registration.firstName} ${registration.lastName}`}</td>
+                  <td>{`${registration.first_name} ${registration.last_name}`}</td>
                   <td>{registration.email}</td>
-                  <td>{registration.academicYear}</td>
+                  <td>{registration.academic_year}</td>
                   <td>
                     <span
                       className={styles.statusBadge}
@@ -369,6 +357,46 @@ export default function RegistrationsSection({
             <p>No registrations found</p>
           </div>
         )}
+      </div>
+
+      {/* Pagination Controls */}
+      <div className={styles.paginationContainer}>
+        <div className={styles.paginationInfo}>
+          Showing {displayRegistrations.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} - {Math.min(currentPage * pageSize, totalCount)} of {totalCount} registrations
+        </div>
+        <div className={styles.paginationControls}>
+          <button
+            className={styles.paginationBtn}
+            onClick={() => setCurrentPage(1)}
+            disabled={currentPage === 1}
+          >
+            ««
+          </button>
+          <button
+            className={styles.paginationBtn}
+            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+            disabled={currentPage === 1}
+          >
+            «
+          </button>
+          <span className={styles.pageIndicator}>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className={styles.paginationBtn}
+            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+            disabled={currentPage === totalPages}
+          >
+            »
+          </button>
+          <button
+            className={styles.paginationBtn}
+            onClick={() => setCurrentPage(totalPages)}
+            disabled={currentPage === totalPages}
+          >
+            »»
+          </button>
+        </div>
       </div>
 
       {showModal && selectedRegistration && (

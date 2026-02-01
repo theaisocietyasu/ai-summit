@@ -5,10 +5,11 @@ import styles from "./RegistrationModal.module.css";
 
 interface Registration {
   _id: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  middle_name?: string;
+  last_name: string;
   email: string;
-  academicYear: string;
+  academic_year: string;
   status: "Pending" | "Approved" | "Waitlisted" | "Rejected";
   resume?: string;
   [key: string]: any;
@@ -50,7 +51,7 @@ export default function RegistrationModal({
         </button>
 
         <div className={styles.header}>
-          <h2>{`${registration.firstName} ${registration.lastName}`}</h2>
+          <h2>{`${registration.first_name} ${registration.last_name}`}</h2>
           <span
             className={styles.statusBadge}
             style={{
@@ -84,7 +85,7 @@ export default function RegistrationModal({
 
           <div className={styles.detailRow}>
             <span className={styles.label}>Academic Year:</span>
-            <span className={styles.value}>{registration.academicYear}</span>
+            <span className={styles.value}>{registration.academic_year}</span>
           </div>
 
           {/* Display all additional registration fields */}
@@ -93,12 +94,19 @@ export default function RegistrationModal({
             if (
               [
                 "_id",
-                "firstName",
-                "lastName",
+                "first_name",
+                "middle_name",
+                "last_name",
                 "email",
-                "academicYear",
+                "academic_year",
                 "status",
                 "resume",
+                "is_approved",
+                "is_waitlisted",
+                "is_rejected",
+                "created_at",
+                "updated_at",
+                "photo_release",
               ].includes(key)
             ) {
               return null;
@@ -106,7 +114,7 @@ export default function RegistrationModal({
 
             // Format key for display
             const displayKey = key
-              .replace(/([A-Z])/g, " $1")
+              .replace(/_/g, " ")
               .replace(/^./, (str) => str.toUpperCase());
 
             return (
