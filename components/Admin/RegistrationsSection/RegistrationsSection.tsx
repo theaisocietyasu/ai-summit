@@ -231,6 +231,7 @@ export default function RegistrationsSection({
         </div>
       )}
 
+
       <div className={styles.controls}>
         <div className={styles.searchBox}>
           <input
@@ -241,59 +242,67 @@ export default function RegistrationsSection({
             className={styles.searchInput}
           />
         </div>
-
-        <div className={styles.filterSection}>
-          <div className={styles.filterGroup}>
-            <label>Status:</label>
-            <div className={styles.filterOptions}>
+        <div className={styles.filterRow}>
+          {/* Status Dropdown */}
+          <div className={styles.dropdownMulti} tabIndex={0}>
+            <button className={styles.dropdownButton} type="button">
+              Status
+              <span className={styles.dropdownArrow}>▼</span>
+            </button>
+            <div className={styles.dropdownContent}>
               {STATUS_OPTIONS.map((status) => (
-                <label key={status} className={styles.filterCheckbox}>
+                <label key={status} className={styles.dropdownCheckbox}>
                   <input
                     type="checkbox"
                     checked={statusFilter.has(status)}
                     onChange={() => toggleStatusFilter(status)}
                   />
-                  <span>{status}</span>
+                  {status}
                 </label>
               ))}
             </div>
           </div>
 
-          <div className={styles.filterGroup}>
-            <label>Academic Year:</label>
-            <div className={styles.filterOptions}>
+          {/* Academic Year Dropdown */}
+          <div className={styles.dropdownMulti} tabIndex={0}>
+            <button className={styles.dropdownButton} type="button">
+              Academic Year
+              <span className={styles.dropdownArrow}>▼</span>
+            </button>
+            <div className={styles.dropdownContent}>
               {getUniqueYears().map((year) => (
-                <label key={year} className={styles.filterCheckbox}>
+                <label key={year} className={styles.dropdownCheckbox}>
                   <input
                     type="checkbox"
                     checked={yearFilter.has(year)}
                     onChange={() => toggleYearFilter(year)}
                   />
-                  <span>{year}</span>
+                  {year}
                 </label>
               ))}
             </div>
           </div>
-        </div>
 
-        <div className={styles.sortSection}>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-            className={styles.sortSelect}
-          >
-            <option value="name">Sort by Name</option>
-            <option value="email">Sort by Email</option>
-            <option value="year">Sort by Year</option>
-            <option value="status">Sort by Status</option>
-          </select>
-          <button
-            className={styles.sortToggle}
-            onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-            title={`Sort ${sortOrder === "asc" ? "descending" : "ascending"}`}
-          >
-            {sortOrder === "asc" ? "↑" : "↓"}
-          </button>
+          {/* Sort Section */}
+          <div className={styles.sortSection}>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+              className={styles.sortSelect}
+            >
+              <option value="name">Sort by Name</option>
+              <option value="email">Sort by Email</option>
+              <option value="year">Sort by Year</option>
+              <option value="status">Sort by Status</option>
+            </select>
+            <button
+              className={styles.sortToggle}
+              onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+              title={`Sort ${sortOrder === "asc" ? "descending" : "ascending"}`}
+            >
+              {sortOrder === "asc" ? "↑" : "↓"}
+            </button>
+          </div>
         </div>
       </div>
 
