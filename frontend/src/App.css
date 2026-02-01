@@ -1,0 +1,14 @@
+:root {
+  --primary-color: #6366f1;
+  --secondary-color: #ec4899;
+  --background-color: #0f172a;
+  --surface-color: #1e293b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --border-color: #334155;
+}
+
+.App {
+  background: var(--background-color);
+  color: var(--text-primary);
+}

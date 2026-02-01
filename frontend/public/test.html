@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Summit - Register</title>
+    <!-- Google Fonts: Inter -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Decorative background elements for Glassmorphism -->
+    <div class="bg-glow blob-1"></div>
+    <div class="bg-glow blob-2"></div>
+
+    <nav>
+      <div class="nav-container">
+        <a href="/" class="logo">AI<span>Summit</span></a>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/register.html" class="active">Register</a></li>
+          <li><a href="/login.html">Admin</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="container">
+      <div class="form-wrapper">
+        <div class="form-container glass">
+          <h1 class="gradient-text">Register for AI Summit</h1>
+          <p class="subtitle">Join the future of innovation at ASU</p>
+
+          <div id="message"></div>
+
+          <form id="registration-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="first_name">First Name *</label>
+                <input
+                  type="text"
+                  id="first_name"
+                  name="first_name"
+                  required
+                  maxlength="1000"
+                  placeholder="John"
+                />
+              </div>
+              <div class="form-group">
+                <label for="middle_name">Middle Name</label>
+                <input
+                  type="text"
+                  id="middle_name"
+                  name="middle_name"
+                  maxlength="1000"
+                  placeholder="Optional"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="last_name">Last Name *</label>
+              <input
+                type="text"
+                id="last_name"
+                name="last_name"
+                required
+                maxlength="1000"
+                placeholder="Doe"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                maxlength="1000"
+                placeholder="username@asu.edu"
+              />
+              <p class="form-hint">Must be @asu.edu or @gmail.com</p>
+            </div>
+
+            <div class="form-group">
+              <label for="academic_year">Academic Year *</label>
+              <div class="select-wrapper">
+                <select id="academic_year" name="academic_year" required>
+                  <option value="" disabled selected>
+                    Select your academic year...
+                  </option>
+                  <option value="Freshman">Freshman</option>
+                  <option value="Sophomore">Sophomore</option>
+                  <option value="Junior">Junior</option>
+                  <option value="Senior">Senior</option>
+                  <option value="Master's">Master's</option>
+                  <option value="PhD">PhD</option>
+                  <option value="Staff">Staff</option>
+                </select>
+              </div>
+            </div>
+
+            <div
+              class="form-group"
+              id="field-of-study-group"
+              style="display: none"
+            >
+              <label for="field_of_study">Field of Study *</label>
+              <input
+                type="text"
+                id="field_of_study"
+                name="field_of_study"
+                maxlength="1000"
+              />
+            </div>
+
+            <div class="form-group" id="major-group">
+              <label for="major">Major *</label>
+              <input
+                type="text"
+                id="major"
+                name="major"
+                required
+                maxlength="1000"
+                placeholder="e.g. Computer Science"
+              />
+            </div>
+
+            <div class="form-group" id="why-attend-group">
+              <label for="why_attend">Why do you want to attend? *</label>
+              <textarea
+                id="why_attend"
+                name="why_attend"
+                maxlength="10000"
+                placeholder="Tell us about your interest in AI..."
+              ></textarea>
+              <div class="hint-flex">
+                <p class="form-hint">Minimum 500 characters</p>
+                <p class="form-hint" id="char-count">0 / 500</p>
+              </div>
+            </div>
+
+            <div class="form-group" id="resume-group">
+              <label for="resume">Resume (PDF) *</label>
+              <div class="file-input-wrapper">
+                <input
+                  type="file"
+                  id="resume"
+                  name="resume"
+                  accept="application/pdf"
+                />
+              </div>
+              <p class="form-hint">Max 5MB, PDF only</p>
+            </div>
+
+            <div class="form-group" id="relevant-courses-group">
+              <label for="relevant_courses">Relevant Courses</label>
+              <input
+                type="text"
+                id="relevant_courses"
+                name="relevant_courses"
+                maxlength="1000"
+                placeholder="CSE 310, MAT 243..."
+              />
+              <p class="form-hint">Comma-separated list (optional)</p>
+            </div>
+
+            <div class="form-group" id="prior-work-group">
+              <label for="prior_work_exp">Prior Work Experience</label>
+              <textarea
+                id="prior_work_exp"
+                name="prior_work_exp"
+                maxlength="10000"
+                placeholder="Internships, projects, or research..."
+              ></textarea>
+            </div>
+
+            <div class="form-group checkbox-container">
+              <label class="checkbox-label">
+                <input
+                  type="checkbox"
+                  id="photo_release"
+                  name="photo_release"
+                  required
+                />
+                <span class="custom-checkbox"></span>
+                <span class="label-text"
+                  >I acknowledge and agree to the photo release policy *</span
+                >
+              </label>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-submit" id="submit-btn">
+                Submit Registration
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      /* Your existing Javascript remains the same */
+      const form = document.getElementById("registration-form");
+      const whyAttend = document.getElementById("why_attend");
+      const charCount = document.getElementById("char-count");
+      const academicYear = document.getElementById("academic_year");
+      const messageDiv = document.getElementById("message");
+      const submitBtn = document.getElementById("submit-btn");
+
+      const staffHiddenFields = [
+        "major-group",
+        "why-attend-group",
+        "resume-group",
+        "relevant-courses-group",
+        "prior-work-group",
+      ];
+
+      function toggleStaffFields() {
+        const isStaff = academicYear.value === "Staff";
+        staffHiddenFields.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.style.display = isStaff ? "none" : "block";
+          }
+        });
+        document.getElementById("major").required = !isStaff;
+        const fieldOfStudyGroup = document.getElementById(
+          "field-of-study-group",
+        );
+        const fieldOfStudy = document.getElementById("field_of_study");
+        fieldOfStudyGroup.style.display = isStaff ? "block" : "none";
+        fieldOfStudy.required = isStaff;
+      }
+
+      academicYear.addEventListener("change", toggleStaffFields);
+
+      whyAttend.addEventListener("input", () => {
+        const count = whyAttend.value.length;
+        charCount.textContent = `${count} / 500`;
+        charCount.style.color = count >= 500 ? "#22c55e" : "#94a3b8";
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        messageDiv.innerHTML = "";
+        submitBtn.disabled = true;
+        submitBtn.classList.add("loading");
+        submitBtn.textContent = "Submitting...";
+
+        const formData = new FormData(form);
+        formData.set(
+          "photo_release",
+          document.getElementById("photo_release").checked ? "true" : "false",
+        );
+
+        try {
+          const res = await fetch("/api/register", {
+            method: "POST",
+            body: formData,
+          });
+          const data = await res.json();
+          if (res.ok) {
+            messageDiv.innerHTML = `<div class="message success">${data.message || "Registration successful!"}</div>`;
+            form.reset();
+            charCount.textContent = "0 / 500";
+          } else {
+            messageDiv.innerHTML = `<div class="message error">${data.error || "Failed to submit."}</div>`;
+          }
+        } catch (err) {
+          messageDiv.innerHTML = `<div class="message error">Network error. Please try again.</div>`;
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.classList.remove("loading");
+          submitBtn.textContent = "Submit Registration";
+        }
+      });
+    </script>
+  </body>
+</html>
