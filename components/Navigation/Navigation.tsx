@@ -1,24 +1,36 @@
 "use client";
 
-import Link from "next/link";
-import styles from "./Navigation.module.css";
+import { FloatingNavbar } from "@/components/ui/navigation";
+import {
+  IconHome,
+  IconCalendarEvent,
+  IconUsers,
+  IconBuildingSkyscraper,
+} from "@tabler/icons-react";
+
+const navItems = [
+  {
+    name: "Home",
+    link: "/",
+    icon: <IconHome size={18} />,
+  },
+  {
+    name: "Speakers",
+    link: "#speakers",
+    icon: <IconUsers size={18} />,
+  },
+  {
+    name: "Events",
+    link: "#events",
+    icon: <IconCalendarEvent size={18} />,
+  },
+  {
+    name: "Sponsors",
+    link: "#sponsors",
+    icon: <IconBuildingSkyscraper size={18} />,
+  },
+];
 
 export default function Navigation() {
-  return (
-    <nav className={styles.nav}>
-      <div className={styles.navContainer}>
-        <Link href="/" className={styles.logo}>
-          AI Summit
-        </Link>
-        <ul className={styles.navLinks}>
-          <li>
-            <Link href="/">Home</Link>
-          </li>
-          <li>
-            <Link href="/register">Register</Link>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  );
+  return <FloatingNavbar navItems={navItems} />;
 }
