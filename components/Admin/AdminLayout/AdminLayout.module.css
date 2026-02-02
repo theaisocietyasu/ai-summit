@@ -1,0 +1,151 @@
+.main {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  min-height: 100vh;
+  color: #e4e4e4;
+}
+
+.nav {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  backdrop-filter: blur(10px);
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #00d9ff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.logo:hover {
+  color: #a855f7;
+}
+
+.navLinks {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+}
+
+.navLinks a,
+.navLinks button {
+  color: #e4e4e4;
+  text-decoration: none;
+  transition: color 0.3s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.navLinks a:hover,
+.navLinks button:hover {
+  color: #00d9ff;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.adminGrid {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 30px;
+  min-height: calc(100vh - 200px);
+}
+
+.adminSidebar {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  padding: 20px;
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.adminSidebar h3 {
+  color: #00d9ff;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.adminSidebar ul {
+  list-style: none;
+}
+
+.adminSidebar li {
+  margin-bottom: 10px;
+}
+
+.navLink {
+  display: block;
+  width: 100%;
+  padding: 12px 15px;
+  color: #e4e4e4;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.3s;
+  font-size: 0.95rem;
+}
+
+.navLink:hover,
+.navLink.active {
+  background: rgba(0, 217, 255, 0.2);
+  color: #00d9ff;
+}
+
+.adminContent {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.adminContent h2 {
+  color: #00d9ff;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+}
+
+.adminContent h3 {
+  color: #00d9ff;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .adminGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .adminSidebar {
+    position: static;
+    margin-bottom: 20px;
+  }
+
+  .navLinks {
+    gap: 15px;
+    font-size: 0.9rem;
+  }
+}

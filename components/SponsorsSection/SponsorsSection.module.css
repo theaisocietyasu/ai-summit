@@ -1,0 +1,130 @@
+.section {
+  padding: 60px 0;
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 40px;
+  text-align: center;
+  color: #00d9ff;
+}
+
+.sponsorsContent {
+  width: 100%;
+}
+
+.sponsorTier {
+  margin-bottom: 40px;
+}
+
+.sponsorTier h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 1.2rem;
+}
+
+.sponsorTier.platinum h3 {
+  background: linear-gradient(90deg, #e5e4e2, #c0c0c0);
+  color: #1a1a2e;
+}
+
+.sponsorTier.gold h3 {
+  background: linear-gradient(90deg, #ffd700, #ffb700);
+  color: #1a1a2e;
+}
+
+.sponsorTier.silver h3 {
+  background: linear-gradient(90deg, #c0c0c0, #a8a8a8);
+  color: #1a1a2e;
+}
+
+.sponsorTier.bronze h3 {
+  background: linear-gradient(90deg, #cd7f32, #b87333);
+  color: #fff;
+}
+
+.sponsorLogos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+}
+
+.sponsorLogo {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 200px;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+}
+
+.sponsorLogo:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.sponsorLogo img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 217, 255, 0.2);
+  border-top: 4px solid #00d9ff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.emptyState h3 {
+  color: #00d9ff;
+  margin-bottom: 10px;
+}
+
+.emptyState p {
+  color: #b4b4b4;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .sponsorLogos {
+    gap: 15px;
+  }
+
+  .sponsorLogo {
+    max-width: 150px;
+    padding: 15px;
+  }
+}

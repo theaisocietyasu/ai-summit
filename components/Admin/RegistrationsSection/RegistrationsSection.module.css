@@ -1,0 +1,380 @@
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #e4e4e4;
+}
+
+.message {
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+.message.success {
+  background: rgba(34, 197, 94, 0.2);
+  border: 1px solid rgba(34, 197, 94, 0.5);
+  color: #86efac;
+}
+
+.message.error {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  color: #fca5a5;
+}
+
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.searchBox {
+  display: flex;
+  gap: 10px;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 12px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #e4e4e4;
+  font-size: 1rem;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #00d9ff;
+  box-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
+}
+
+
+.filterRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  margin-top: 0;
+}
+
+.dropdownMulti {
+  position: relative;
+  display: inline-block;
+  min-width: 160px;
+}
+
+.dropdownButton {
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  background: rgba(0,0,0,0.3);
+  color: #e4e4e4;
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dropdownArrow {
+  margin-left: 8px;
+  font-size: 0.8em;
+}
+
+.dropdownContent {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 110%;
+  background: #232b3b;
+  min-width: 180px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 10;
+  padding: 10px 0;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.dropdownMulti:focus-within .dropdownContent,
+.dropdownMulti:hover .dropdownContent {
+  display: block;
+}
+
+.dropdownCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 18px;
+  cursor: pointer;
+  color: #b3b3b3;
+  user-select: none;
+  font-size: 0.97em;
+  transition: color 0.2s;
+}
+
+.dropdownCheckbox:hover {
+  color: #e4e4e4;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filterGroup label {
+  color: #e4e4e4;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.filterOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filterCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: #b3b3b3;
+  user-select: none;
+  transition: color 0.2s;
+}
+
+.filterCheckbox:hover {
+  color: #e4e4e4;
+}
+
+.filterCheckbox input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: #00d9ff;
+}
+
+.sortSection {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.sortSelect {
+  padding: 12px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #e4e4e4;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.sortSelect:focus {
+  outline: none;
+  border-color: #00d9ff;
+}
+
+.sortSelect option {
+  background: #1a1a1a;
+  color: #e4e4e4;
+}
+
+.sortToggle {
+  padding: 12px 18px;
+  border: 1px solid rgba(0, 217, 255, 0.3);
+  border-radius: 10px;
+  background: rgba(0, 217, 255, 0.1);
+  color: #00d9ff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.sortToggle:hover {
+  background: rgba(0, 217, 255, 0.2);
+}
+
+.tableContainer {
+  overflow-x: auto;
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.table thead {
+  background: rgba(0, 217, 255, 0.1);
+  border-bottom: 2px solid rgba(0, 217, 255, 0.2);
+}
+
+.table th {
+  padding: 15px;
+  text-align: left;
+  color: #00d9ff;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.table td {
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #e4e4e4;
+}
+
+.table tbody tr:hover {
+  background: rgba(0, 217, 255, 0.05);
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-left: 3px solid;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.viewBtn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  background: rgba(0, 217, 255, 0.2);
+  color: #00d9ff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 0.85rem;
+}
+
+.viewBtn:hover {
+  background: rgba(0, 217, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.statusSelect {
+  padding: 8px 12px;
+  border: 1px solid rgba(0, 217, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #00d9ff;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.statusSelect:hover {
+  border-color: #00d9ff;
+}
+
+.statusSelect:focus {
+  outline: none;
+  border-color: #00d9ff;
+  box-shadow: 0 0 8px rgba(0, 217, 255, 0.3);
+}
+
+.statusSelect option {
+  background: #1a1a1a;
+  color: #e4e4e4;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px;
+  color: #b3b3b3;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.empty p {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+/* Pagination Styles */
+.paginationContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.paginationInfo {
+  color: #b3b3b3;
+  font-size: 0.95rem;
+}
+
+.paginationControls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.paginationBtn {
+  padding: 8px 16px;
+  border: 1px solid rgba(0, 217, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #00d9ff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-width: 40px;
+}
+
+.paginationBtn:hover:not(:disabled) {
+  background: rgba(0, 217, 255, 0.2);
+  border-color: #00d9ff;
+  transform: translateY(-1px);
+}
+
+.paginationBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.pageIndicator {
+  padding: 8px 16px;
+  color: #e4e4e4;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .paginationContainer {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .paginationInfo {
+    width: 100%;
+  }
+}
