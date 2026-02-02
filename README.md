@@ -21,6 +21,7 @@ Next.js app for the AI Summit website (frontend + API routes).
 | `DISCORD_GUILD_ID` | - | Discord server (guild) id |
 | `DISCORD_BOT_TOKEN` | - | Bot token used to verify guild roles |
 | `ALLOWED_LOGIN_ROLE_IDS` | - | Comma-separated role ids allowed to access `/admin` |
+| `NEXT_PUBLIC_API_URL` | - | Optional API base URL; if set the frontend calls this instead of same-origin `/api` |
 
 ## Setup
 
@@ -29,6 +30,8 @@ npm install
 npm run build
 npm start
 ```
+
+Copy `.env.sample` to `.env.local` and fill in values for local development.
 
 For development:
 ```bash
@@ -51,6 +54,10 @@ npm run dev
 - `GET /api/events` - Get all events
 - `GET /api/sponsors` - Get all sponsors (sorted by tier)
 - `GET /api/files/{fileId}` - Get uploaded file (resumes require admin)
+
+## Security
+
+See [../SECURITY_AUDIT_LOG.md](../SECURITY_AUDIT_LOG.md) for security notes and follow-ups.
 
 ### Registration
 

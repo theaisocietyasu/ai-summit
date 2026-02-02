@@ -60,13 +60,6 @@ export default function RegistrationsSection() {
     return "Pending";
   };
 
-  const transformRegistrations = (regs: Registration[]): RegistrationDisplay[] => {
-    return regs.map(reg => ({
-      ...reg,
-      status: getStatus(reg)
-    }));
-  };
-
   const [selectedRegistration, setSelectedRegistration] =
     useState<RegistrationDisplay | null>(null);
   const [showModal, setShowModal] = useState(false);
@@ -104,7 +97,12 @@ export default function RegistrationsSection() {
       if (res.ok) {
         const data = await res.json();
         setRegistrations(data.registrations);
-        setDisplayRegistrations(transformRegistrations(data.registrations));
+        setDisplayRegistrations(
+          (data.registrations as Registration[]).map((reg) => ({
+            ...reg,
+            status: getStatus(reg),
+          })),
+        );
         
         if (data.pagination) {
           setTotalPages(data.pagination.totalPages);
@@ -171,7 +169,7 @@ export default function RegistrationsSection() {
       } else {
         setMessage({ type: "error", text: "Failed to update status" });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: "error", text: "Network error" });
     }
   };

@@ -119,7 +119,7 @@ export default function AdminSpeakersSection() {
           text: data.error || "Failed to save speaker",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: "error", text: "Network error" });
     } finally {
       setLoading(false);
@@ -147,7 +147,7 @@ export default function AdminSpeakersSection() {
       } else {
         setMessage({ type: "error", text: "Failed to delete speaker" });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: "error", text: "Network error" });
     }
   };

@@ -34,7 +34,7 @@ export default function BannerSection() {
           text: data.error || "Failed to save banner",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: "error", text: "Network error" });
     } finally {
       setLoading(false);

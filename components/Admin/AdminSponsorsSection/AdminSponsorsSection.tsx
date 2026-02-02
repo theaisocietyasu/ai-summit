@@ -119,7 +119,7 @@ export default function AdminSponsorsSection() {
           text: data.error || "Failed to save sponsor",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: "error", text: "Network error" });
     } finally {
       setLoading(false);
@@ -147,7 +147,7 @@ export default function AdminSponsorsSection() {
       } else {
         setMessage({ type: "error", text: "Failed to delete sponsor" });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: "error", text: "Network error" });
     }
   };

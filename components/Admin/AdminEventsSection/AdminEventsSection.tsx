@@ -139,7 +139,7 @@ export default function AdminEventsSection() {
           text: data.error || "Failed to save event",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: "error", text: "Network error" });
     } finally {
       setLoading(false);
@@ -167,7 +167,7 @@ export default function AdminEventsSection() {
       } else {
         setMessage({ type: "error", text: "Failed to delete event" });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: "error", text: "Network error" });
     }
   };

@@ -32,7 +32,7 @@ export default function RegistrationModal({
     setPdfLoading(true);
     try {
       // The resume field contains the file ID for GridFS
-      // The API should serve PDFs from /api/file/:id
+      // The API serves files from /api/files/:id (resume requires admin)
       setShowPdf(true);
     } catch (error) {
       console.error("Error loading resume:", error);
@@ -140,7 +140,7 @@ export default function RegistrationModal({
         {showPdf && registration.resume && (
           <div className={styles.pdfContainer}>
             <iframe
-              src={`/api/file/${registration.resume}?type=resume`}
+              src={`/api/files/${registration.resume}`}
               title="Resume PDF"
               className={styles.pdfFrame}
             />
