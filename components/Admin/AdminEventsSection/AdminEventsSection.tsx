@@ -11,13 +11,7 @@ interface Event {
   thumbnail?: string;
 }
 
-interface AdminEventsSectionProps {
-  authHeaders: Record<string, string>;
-}
-
-export default function AdminEventsSection({
-  authHeaders,
-}: AdminEventsSectionProps) {
+export default function AdminEventsSection() {
   const [events, setEvents] = useState<Event[]>([]);
   const [message, setMessage] = useState<{
     type: "success" | "error";
@@ -39,8 +33,22 @@ export default function AdminEventsSection({
     try {
       const res = await fetch("/api/events");
       if (res.ok) {
-        const data = await res.json();
-        setEvents(data);
+        const payload = await res.json();
+        const rawEvents = Array.isArray(payload)
+          ? payload
+          : (payload?.events ?? payload?.data?.events);
+
+        const normalized: Event[] = Array.isArray(rawEvents)
+          ? rawEvents.map((e: any) => ({
+              _id: e?._id,
+              title: e?.title ?? e?.event_title ?? "",
+              description: e?.description ?? e?.event_description ?? "",
+              tags: Array.isArray(e?.tags) ? e.tags : [],
+              thumbnail: e?.thumbnail ?? e?.thumbnail_url,
+            }))
+          : [];
+
+        setEvents(normalized);
       }
     } catch (error) {
       console.error("Error fetching events:", error);
@@ -107,7 +115,6 @@ export default function AdminEventsSection({
 
       const res = await fetch(url, {
         method,
-        headers: authHeaders,
         body: formDataObj,
       });
 
@@ -132,7 +139,7 @@ export default function AdminEventsSection({
           text: data.error || "Failed to save event",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: "error", text: "Network error" });
     } finally {
       setLoading(false);
@@ -152,7 +159,6 @@ export default function AdminEventsSection({
     try {
       const res = await fetch(`/api/admin/event/${id}`, {
         method: "DELETE",
-        headers: authHeaders,
       });
 
       if (res.ok) {
@@ -161,7 +167,7 @@ export default function AdminEventsSection({
       } else {
         setMessage({ type: "error", text: "Failed to delete event" });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: "error", text: "Network error" });
     }
   };

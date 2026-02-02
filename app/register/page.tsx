@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import styles from "./register.module.css";
 import { submitRegistration } from "@/app/lib/api";
 
@@ -165,7 +166,7 @@ export default function RegisterPage() {
           : response.error || "Registration failed";
         setMessage({ type: "error", text: errorText });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: "error", text: "Network error. Please try again." });
     } finally {
       setLoading(false);
@@ -176,18 +177,18 @@ export default function RegisterPage() {
     <main className={styles.main}>
       <nav className={styles.nav}>
         <div className={styles.navContainer}>
-          <a href="/" className={styles.logo}>
+          <Link href="/" className={styles.logo}>
             AI Summit
-          </a>
+          </Link>
           <ul className={styles.navLinks}>
             <li>
-              <a href="/">Home</a>
+              <Link href="/">Home</Link>
             </li>
             <li>
-              <a href="/register">Register</a>
+              <Link href="/register">Register</Link>
             </li>
             <li>
-              <a href="/login">Admin</a>
+              <Link href="/login">Admin</Link>
             </li>
           </ul>
         </div>
@@ -277,7 +278,7 @@ export default function RegisterPage() {
                   <option value="Sophomore">Sophomore</option>
                   <option value="Junior">Junior</option>
                   <option value="Senior">Senior</option>
-                  <option value="Master's">Master's</option>
+                  <option value="Master's">Master&apos;s</option>
                   <option value="PhD">PhD</option>
                   <option value="Staff">Staff</option>
                 </select>

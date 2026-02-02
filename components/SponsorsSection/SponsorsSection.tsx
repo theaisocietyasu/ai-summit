@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import { useEffect, useState } from "react";
 import styles from "./SponsorsSection.module.css";
 import { getSponsors } from "@/app/lib/api";

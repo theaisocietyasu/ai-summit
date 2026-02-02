@@ -1,49 +1,34 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import styles from "./login.module.css";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+  useEffect(() => {
+    let cancelled = false;
 
-    try {
-      // Create Basic Auth header
-      const credentials = btoa(`${username}:${password}`);
+    (async () => {
+      try {
+        const res = await fetch("/api/auth/session", { method: "GET" });
+        if (res.ok) {
+          router.push("/admin");
+          return;
+        }
+      } catch {
+        // Ignore; show login button below.
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
 
-      // Test authentication with a request to the backend
-      // const res = await fetch("/api/admin/validate", {
-      //   method: "GET",
-      //   headers: {
-      //     Authorization: `Basic ${credentials}`,
-      //   },
-      // });
-
-      localStorage.setItem("adminAuth", credentials);
-      router.push("/admin");
-      // if (res.ok) {
-      //   // Store the credentials in localStorage
-      //   localStorage.setItem("adminAuth", credentials);
-      //   router.push("/admin");
-      // } else {
-      //   setError("Invalid username or password");
-      // }
-    } catch (error) {
-      setError("Connection error. Please try again.");
-      console.error("Login error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    return () => {
+      cancelled = true;
+    };
+  }, [router]);
 
   return (
     <div className={styles.container}>
@@ -53,49 +38,21 @@ export default function LoginPage() {
           <p>Access the AI Summit Admin Panel</p>
         </div>
 
-        {error && (
-          <div className={styles.error}>
-            <span className={styles.errorIcon}>⚠</span>
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.formGroup}>
-            <label htmlFor="username">Username</label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter your username"
-              required
-              disabled={loading}
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              required
-              disabled={loading}
-            />
-          </div>
-
-          <button type="submit" className={styles.submitBtn} disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
-          </button>
-        </form>
+        <div className={styles.form}>
+          <a
+            className={styles.submitBtn}
+            href="/api/auth/discord"
+            aria-disabled={loading}
+            onClick={(e) => {
+              if (loading) e.preventDefault();
+            }}
+          >
+            {loading ? "Checking session..." : "Continue with Discord"}
+          </a>
+        </div>
 
         <div className={styles.footer}>
-          <p>Contact the administrator if you don't have login credentials</p>
+          <p>You must be in the Discord and have an allowed role.</p>
         </div>
       </div>
 

@@ -16,23 +16,39 @@ export default function AdminPage() {
     "banner" | "speakers" | "events" | "sponsors" | "registrations"
   >("banner");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authHeaders, setAuthHeaders] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    const authString = localStorage.getItem("adminAuth");
-    if (!authString) {
-      router.push("/login");
-    } else {
-      setAuthHeaders({
-        Authorization: `Basic ${authString}`,
-      });
-      setIsAuthenticated(true);
-    }
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const res = await fetch("/api/auth/session", { method: "GET" });
+        if (!res.ok) {
+          router.push("/login");
+          return;
+        }
+
+        if (!cancelled) {
+          setIsAuthenticated(true);
+        }
+      } catch {
+        router.push("/login");
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem("adminAuth");
-    router.push("/login");
+    (async () => {
+      try {
+        await fetch("/api/auth/logout", { method: "POST" });
+      } finally {
+        router.push("/login");
+      }
+    })();
   };
 
   if (!isAuthenticated) {
@@ -45,21 +61,11 @@ export default function AdminPage() {
       onSectionChange={setActiveSection}
       onLogout={handleLogout}
     >
-      {activeSection === "banner" && (
-        <BannerSection authHeaders={authHeaders} />
-      )}
-      {activeSection === "speakers" && (
-        <AdminSpeakersSection authHeaders={authHeaders} />
-      )}
-      {activeSection === "events" && (
-        <AdminEventsSection authHeaders={authHeaders} />
-      )}
-      {activeSection === "sponsors" && (
-        <AdminSponsorsSection authHeaders={authHeaders} />
-      )}
-      {activeSection === "registrations" && (
-        <RegistrationsSection authHeaders={authHeaders} />
-      )}
+      {activeSection === "banner" && <BannerSection />}
+      {activeSection === "speakers" && <AdminSpeakersSection />}
+      {activeSection === "events" && <AdminEventsSection />}
+      {activeSection === "sponsors" && <AdminSponsorsSection />}
+      {activeSection === "registrations" && <RegistrationsSection />}
     </AdminLayout>
   );
 }

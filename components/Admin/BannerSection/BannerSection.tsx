@@ -3,11 +3,7 @@
 import { useState } from "react";
 import styles from "./BannerSection.module.css";
 
-interface BannerSectionProps {
-  authHeaders: Record<string, string>;
-}
-
-export default function BannerSection({ authHeaders }: BannerSectionProps) {
+export default function BannerSection() {
   const [message, setMessage] = useState<{
     type: "success" | "error";
     text: string;
@@ -24,7 +20,6 @@ export default function BannerSection({ authHeaders }: BannerSectionProps) {
     try {
       const res = await fetch("/api/admin/banner", {
         method: "POST",
-        headers: authHeaders,
         body: formData,
       });
 
@@ -39,7 +34,7 @@ export default function BannerSection({ authHeaders }: BannerSectionProps) {
           text: data.error || "Failed to save banner",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: "error", text: "Network error" });
     } finally {
       setLoading(false);

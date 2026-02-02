@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import { useEffect, useState } from "react";
 import styles from "./EventsSection.module.css";
 import { getEvents } from "@/app/lib/api";

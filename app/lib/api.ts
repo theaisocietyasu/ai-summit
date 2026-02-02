@@ -1,5 +1,9 @@
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "";
+
+function buildApiUrl(endpoint: string): string {
+  if (API_BASE_URL) return `${API_BASE_URL}${endpoint}`;
+  return `/api${endpoint}`;
+}
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -13,9 +17,10 @@ export async function apiCall<T>(
   options?: RequestInit,
 ): Promise<ApiResponse<T>> {
   try {
-    const url = `${API_BASE_URL}${endpoint}`;
+    const url = buildApiUrl(endpoint);
     const response = await fetch(url, {
       ...options,
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         ...options?.headers,
@@ -68,10 +73,11 @@ export async function getFile(fileId: string) {
 
 export async function submitRegistration(formData: FormData) {
   try {
-    const url = `${API_BASE_URL}/register`;
+    const url = buildApiUrl("/register");
     const response = await fetch(url, {
       method: "POST",
       body: formData,
+      credentials: "include",
     });
 
     if (!response.ok) {
