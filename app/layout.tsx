@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { SpaceBackground } from "@/components/ui/backgrounds";
+import { FloatingLines } from "@/components/ui/backgrounds/FloatingLines";
 
 export const metadata: Metadata = {
   title: "AI Summit | The AI Society at ASU",
@@ -25,7 +25,16 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body>
-        <SpaceBackground>{children}</SpaceBackground>
+        <FloatingLines
+          linesGradient={['#6a1740', '#4d2386', '#342b8a']}
+          enabledWaves={['top', 'middle', 'bottom']}
+          lineCount={5}
+          lineDistance={5}
+          interactive={true}
+          parallax={true}
+        >
+          {children}
+        </FloatingLines>
       </body>
     </html>
   );
