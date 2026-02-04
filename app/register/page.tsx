@@ -2,10 +2,41 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import styles from "./register.module.css";
+import { motion } from "framer-motion";
+import CardNav from "@/components/ui/navigation/CardNav";
 import { submitRegistration } from "@/app/lib/api";
+import type { CardNavItem } from "@/components/ui/navigation/CardNav";
+import styles from "./register.module.css";
 
 type MessageType = "success" | "error" | null;
+
+const navItems: CardNavItem[] = [
+  {
+    label: "Home",
+    bgColor: "#0D0716",
+    textColor: "#fff",
+    links: [
+      { label: "Back to Home", href: "/", ariaLabel: "Go to home page" },
+    ]
+  },
+  {
+    label: "Event",
+    bgColor: "#170D27",
+    textColor: "#fff",
+    links: [
+      { label: "About", href: "/#about", ariaLabel: "Learn about the event" },
+      { label: "Speakers", href: "/#speakers", ariaLabel: "View speakers" }
+    ]
+  },
+  {
+    label: "Connect",
+    bgColor: "#271E37",
+    textColor: "#fff",
+    links: [
+      { label: "Contact", href: "/#contact", ariaLabel: "Contact us" },
+    ]
+  }
+];
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -37,7 +68,7 @@ export default function RegisterPage() {
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
+    >
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -71,7 +102,6 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      // Validate required fields
       if (
         !formData.first_name ||
         !formData.last_name ||
@@ -114,7 +144,6 @@ export default function RegisterPage() {
         return;
       }
 
-      // Build FormData for multipart request
       const form = new FormData();
       form.append("first_name", formData.first_name);
       if (formData.middle_name)
@@ -143,7 +172,6 @@ export default function RegisterPage() {
           text:
             response.data?.message || "Registration submitted successfully!",
         });
-        // Reset form
         setFormData({
           first_name: "",
           middle_name: "",
@@ -175,43 +203,54 @@ export default function RegisterPage() {
 
   return (
     <main className={styles.main}>
-      <nav className={styles.nav}>
-        <div className={styles.navContainer}>
-          <Link href="/" className={styles.logo}>
-            AI Summit
-          </Link>
-          <ul className={styles.navLinks}>
-            <li>
-              <Link href="/">Home</Link>
-            </li>
-            <li>
-              <Link href="/register">Register</Link>
-            </li>
-            <li>
-              <Link href="/login">Admin</Link>
-            </li>
-          </ul>
-        </div>
-      </nav>
+      <CardNav
+        items={navItems}
+        baseColor="transparent"
+        menuColor="#fff"
+        buttonBgColor="#6a1740"
+        buttonTextColor="#fff"
+        buttonLabel="Home"
+        onButtonClick={() => window.location.href = "/"}
+      />
 
       <div className={styles.container}>
-        <section className={styles.section}>
-          <div className={styles.formContainer}>
-            <h1>Register for AI Summit</h1>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className={styles.formCard}
+        >
+          {/* Header */}
+          <div className={styles.header}>
+            <h1 className={styles.title}>
+              Register for <span className={styles.titleAccent}>AI Summit</span>
+            </h1>
+            <p className={styles.subtitle}>
+              Join Arizona State University&apos;s premier AI conference
+            </p>
+          </div>
 
-            {message.text && (
-              <div
-                className={`${styles.message} ${styles[message.type || "error"]}`}
-              >
-                {message.text.split("\n").map((line, i) => (
-                  <div key={i}>{line}</div>
-                ))}
-              </div>
-            )}
+          {/* Messages */}
+          {message.text && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`${styles.message} ${message.type === "success" ? styles.success : styles.error}`}
+            >
+              {message.text.split("\n").map((line, i) => (
+                <div key={i}>{line}</div>
+              ))}
+            </motion.div>
+          )}
 
-            <form onSubmit={handleSubmit} className={styles.form}>
+          {/* Form */}
+          <form onSubmit={handleSubmit} className={styles.form}>
+            {/* Name Row */}
+            <div className={styles.nameRow}>
               <div className={styles.formGroup}>
-                <label htmlFor="first_name">First Name *</label>
+                <label htmlFor="first_name" className={styles.label}>
+                  First Name *
+                </label>
                 <input
                   type="text"
                   id="first_name"
@@ -220,11 +259,14 @@ export default function RegisterPage() {
                   onChange={handleInputChange}
                   maxLength={1000}
                   required
+                  className={styles.input}
+                  placeholder="John"
                 />
               </div>
-
               <div className={styles.formGroup}>
-                <label htmlFor="middle_name">Middle Name</label>
+                <label htmlFor="middle_name" className={styles.label}>
+                  Middle Name
+                </label>
                 <input
                   type="text"
                   id="middle_name"
@@ -232,11 +274,14 @@ export default function RegisterPage() {
                   value={formData.middle_name}
                   onChange={handleInputChange}
                   maxLength={1000}
+                  className={styles.input}
+                  placeholder="(Optional)"
                 />
               </div>
-
               <div className={styles.formGroup}>
-                <label htmlFor="last_name">Last Name *</label>
+                <label htmlFor="last_name" className={styles.label}>
+                  Last Name *
+                </label>
                 <input
                   type="text"
                   id="last_name"
@@ -245,146 +290,208 @@ export default function RegisterPage() {
                   onChange={handleInputChange}
                   maxLength={1000}
                   required
+                  className={styles.input}
+                  placeholder="Doe"
                 />
               </div>
+            </div>
 
-              <div className={styles.formGroup}>
-                <label htmlFor="email">Email *</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  maxLength={1000}
-                  required
-                />
-                <p className={styles.formHint}>
-                  Must be @asu.edu or @gmail.com
-                </p>
-              </div>
+            {/* Email */}
+            <div className={styles.formGroup}>
+              <label htmlFor="email" className={styles.label}>
+                Email *
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                maxLength={1000}
+                required
+                className={styles.input}
+                placeholder="you@asu.edu"
+              />
+              <p className={styles.hint}>
+                Must be @asu.edu or @gmail.com
+              </p>
+            </div>
 
-              <div className={styles.formGroup}>
-                <label htmlFor="academic_year">Academic Year *</label>
-                <select
-                  id="academic_year"
-                  name="academic_year"
-                  value={formData.academic_year}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="">Select your academic year...</option>
-                  <option value="Freshman">Freshman</option>
-                  <option value="Sophomore">Sophomore</option>
-                  <option value="Junior">Junior</option>
-                  <option value="Senior">Senior</option>
-                  <option value="Master's">Master&apos;s</option>
-                  <option value="PhD">PhD</option>
-                  <option value="Staff">Staff</option>
-                </select>
-              </div>
+            {/* Academic Year */}
+            <div className={styles.formGroup}>
+              <label htmlFor="academic_year" className={styles.label}>
+                Academic Year *
+              </label>
+              <select
+                id="academic_year"
+                name="academic_year"
+                value={formData.academic_year}
+                onChange={handleInputChange}
+                required
+                className={styles.input}
+              >
+                <option value="">Select your academic year...</option>
+                <option value="Freshman">Freshman</option>
+                <option value="Sophomore">Sophomore</option>
+                <option value="Junior">Junior</option>
+                <option value="Senior">Senior</option>
+                <option value="Master's">Master&apos;s</option>
+                <option value="PhD">PhD</option>
+                <option value="Staff">Staff</option>
+              </select>
+            </div>
 
-              {!isStaff && (
-                <>
-                  <div className={styles.formGroup}>
-                    <label htmlFor="major">Major *</label>
-                    <input
-                      type="text"
-                      id="major"
-                      name="major"
-                      value={formData.major}
-                      onChange={handleInputChange}
-                      maxLength={1000}
-                      required
-                    />
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label htmlFor="why_attend">
-                      Why do you want to attend? *
-                    </label>
-                    <textarea
-                      id="why_attend"
-                      name="why_attend"
-                      value={formData.why_attend}
-                      onChange={handleInputChange}
-                      maxLength={10000}
-                    />
-                    <p className={styles.formHint}>Minimum 500 characters</p>
-                    <p
-                      className={styles.charCount}
-                      style={{ color: charCount >= 500 ? "#22c55e" : "#888" }}
-                    >
-                      {charCount} / 500 characters
-                    </p>
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label htmlFor="resume">Resume (PDF) *</label>
-                    <input
-                      type="file"
-                      id="resume"
-                      name="resume"
-                      onChange={handleFileChange}
-                      accept="application/pdf"
-                      required={!isStaff}
-                    />
-                    <p className={styles.formHint}>Max 5MB, PDF only</p>
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label htmlFor="relevant_courses">Relevant Courses</label>
-                    <input
-                      type="text"
-                      id="relevant_courses"
-                      name="relevant_courses"
-                      value={formData.relevant_courses}
-                      onChange={handleInputChange}
-                      maxLength={1000}
-                    />
-                    <p className={styles.formHint}>
-                      Comma-separated list (optional)
-                    </p>
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label htmlFor="prior_work_exp">
-                      Prior Work Experience
-                    </label>
-                    <textarea
-                      id="prior_work_exp"
-                      name="prior_work_exp"
-                      value={formData.prior_work_exp}
-                      onChange={handleInputChange}
-                      maxLength={10000}
-                    />
-                  </div>
-                </>
-              )}
-
-              <div className={styles.formGroup}>
-                <label className={styles.checkboxLabel}>
+            {/* Conditional fields for non-staff */}
+            {!isStaff && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className={styles.conditionalFields}
+              >
+                <div className={styles.formGroup}>
+                  <label htmlFor="major" className={styles.label}>
+                    Major *
+                  </label>
                   <input
-                    type="checkbox"
-                    name="photo_release"
-                    checked={formData.photo_release}
-                    onChange={handleCheckboxChange}
+                    type="text"
+                    id="major"
+                    name="major"
+                    value={formData.major}
+                    onChange={handleInputChange}
+                    maxLength={1000}
                     required
+                    className={styles.input}
+                    placeholder="Computer Science"
                   />
-                  <span>
-                    I acknowledge and agree to the photo release policy *
-                  </span>
-                </label>
-              </div>
+                </div>
 
-              <div className={styles.formActions}>
-                <button type="submit" className={styles.btn} disabled={loading}>
-                  {loading ? "Submitting..." : "Submit Registration"}
-                </button>
-              </div>
-            </form>
+                <div className={styles.formGroup}>
+                  <label htmlFor="why_attend" className={styles.label}>
+                    Why do you want to attend? *
+                  </label>
+                  <textarea
+                    id="why_attend"
+                    name="why_attend"
+                    value={formData.why_attend}
+                    onChange={handleInputChange}
+                    maxLength={10000}
+                    rows={5}
+                    className={styles.textarea}
+                    placeholder="Tell us about your interest in AI and what you hope to gain from attending..."
+                  />
+                  <div className={styles.charCountRow}>
+                    <span className={styles.hint}>Minimum 500 characters</span>
+                    <span className={charCount >= 500 ? styles.charCountMet : styles.charCount}>
+                      {charCount} / 500
+                    </span>
+                  </div>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label htmlFor="resume" className={styles.label}>
+                    Resume (PDF) *
+                  </label>
+                  <input
+                    type="file"
+                    id="resume"
+                    name="resume"
+                    onChange={handleFileChange}
+                    accept="application/pdf"
+                    required={!isStaff}
+                    className={styles.fileInput}
+                  />
+                  <p className={styles.hint}>
+                    Max 5MB, PDF only
+                    {resumeFile && (
+                      <span className={styles.fileSelected}>
+                        {" "}✓ {resumeFile.name}
+                      </span>
+                    )}
+                  </p>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label htmlFor="relevant_courses" className={styles.label}>
+                    Relevant Courses
+                  </label>
+                  <input
+                    type="text"
+                    id="relevant_courses"
+                    name="relevant_courses"
+                    value={formData.relevant_courses}
+                    onChange={handleInputChange}
+                    maxLength={1000}
+                    className={styles.input}
+                    placeholder="e.g., Machine Learning, Data Science, Neural Networks"
+                  />
+                  <p className={styles.hint}>
+                    Comma-separated list (optional)
+                  </p>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label htmlFor="prior_work_exp" className={styles.label}>
+                    Prior Work Experience
+                  </label>
+                  <textarea
+                    id="prior_work_exp"
+                    name="prior_work_exp"
+                    value={formData.prior_work_exp}
+                    onChange={handleInputChange}
+                    maxLength={10000}
+                    rows={3}
+                    className={styles.textarea}
+                    placeholder="Brief description of relevant work experience (optional)"
+                  />
+                </div>
+              </motion.div>
+            )}
+
+            {/* Photo Release */}
+            <div className={styles.checkboxContainer}>
+              <label className={styles.checkboxLabel}>
+                <input
+                  type="checkbox"
+                  name="photo_release"
+                  checked={formData.photo_release}
+                  onChange={handleCheckboxChange}
+                  required
+                  className={styles.checkbox}
+                />
+                <span className={styles.checkboxText}>
+                  I acknowledge and agree to the photo release policy. Photos
+                  and videos taken during the event may be used for promotional
+                  purposes. *
+                </span>
+              </label>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className={styles.submitButton}
+            >
+              {loading ? (
+                <span className={styles.loadingText}>
+                  <span className={styles.spinner}></span>
+                  Submitting...
+                </span>
+              ) : (
+                "Submit Registration"
+              )}
+            </button>
+          </form>
+
+          {/* Footer link */}
+          <div className={styles.footerLink}>
+            Already registered?{" "}
+            <Link href="/" className={styles.link}>
+              Return to home
+            </Link>
           </div>
-        </section>
+        </motion.div>
       </div>
     </main>
   );

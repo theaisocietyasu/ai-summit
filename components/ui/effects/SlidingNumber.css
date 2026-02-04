@@ -1,0 +1,43 @@
+.sliding-number {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  font-variant-numeric: tabular-nums;
+}
+
+.sliding-number__current,
+.sliding-number__next {
+  display: inline-block;
+}
+
+.sliding-number__current.sliding-out {
+  animation: slideOut 0.15s ease-out forwards;
+}
+
+.sliding-number__next.sliding-in {
+  position: absolute;
+  left: 0;
+  animation: slideIn 0.15s ease-out forwards;
+}
+
+@keyframes slideOut {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
