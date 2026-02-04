@@ -24,16 +24,13 @@
 
 .countdown__value,
 .countdown__value span {
-  background: linear-gradient(135deg, #6a1740 0%, #a855f7 50%, #4d2386 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffffff;
 }
 
 .countdown__label {
   font-size: 0.75rem;
   font-weight: 500;
-  color: #71717a;
+  color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-top: 0.25rem;
@@ -42,7 +39,7 @@
 .countdown__separator {
   font-size: 2rem;
   font-weight: 700;
-  color: #4d2386;
+  color: #ffffff;
   margin-top: -1rem;
 }
 

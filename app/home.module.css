@@ -109,7 +109,7 @@
 }
 
 .title2026 span {
-  background: linear-gradient(90deg, #6a1740, #a855f7, #4d2386, #ec4899, #6a1740);
+  background: linear-gradient(90deg, #4A42D6, #564DE6, #7B73F0, #564DE6, #4A42D6);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -144,7 +144,7 @@
 .eventDate {
   font-size: 1rem;
   font-weight: 500;
-  color: #a855f7;
+  color: #ffffff;
   margin-bottom: 0.5rem;
 }
 

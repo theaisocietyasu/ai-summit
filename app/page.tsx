@@ -96,12 +96,12 @@ export default function Home() {
     <main className={styles.main}>
       {/* Logo - Top Left */}
       <a href="/" className={styles.logoContainer}>
-        <img src="/logo.svg" alt="AIS Logo" className={styles.logoImage} />
+        <img src="/logo.png" alt="AIS Logo" className={styles.logoImage} />
       </a>
 
       <CardNav
         items={navItems}
-        baseColor="transparent"
+        baseColor="#010003"
         menuColor="#fff"
         buttonBgColor="#6a1740"
         buttonTextColor="#fff"
@@ -166,7 +166,7 @@ export default function Home() {
             <h2 className={styles.sectionTitle}>
               What to{' '}
               <GradientText
-                colors={['#6a1740', '#a855f7', '#4d2386', '#ec4899', '#6a1740']}
+                colors={['#4A42D6', '#564DE6', '#7B73F0', '#564DE6', '#4A42D6']}
                 animationSpeed={5}
               >
                 Expect

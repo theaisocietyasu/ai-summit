@@ -55,10 +55,7 @@ export function FloatingNavbar({ navItems, className }: FloatingNavbarProps) {
           ease: "easeInOut",
         }}
         className={cn(
-          "fixed left-1/2 top-0 z-50 -translate-x-1/2 flex items-center justify-center gap-6 rounded-full px-8 py-4 mt-4",
-          atTop
-            ? "bg-transparent"
-            : "glass shadow-lg shadow-space-purple-dark/20",
+          "fixed left-1/2 top-0 z-50 -translate-x-1/2 flex items-center justify-center gap-6 rounded-full px-8 py-4 mt-4 bg-[#010003]",
           className
         )}
       >
