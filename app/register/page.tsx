@@ -3,22 +3,39 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { FloatingNavbar } from "@/components/ui/navigation";
-import { GlowButton } from "@/components/ui/effects";
+import CardNav from "@/components/ui/navigation/CardNav";
 import { submitRegistration } from "@/app/lib/api";
-import { cn } from "@/lib/utils";
-import {
-  IconHome,
-  IconUserPlus,
-  IconLock,
-} from "@tabler/icons-react";
+import type { CardNavItem } from "@/components/ui/navigation/CardNav";
+import styles from "./register.module.css";
 
 type MessageType = "success" | "error" | null;
 
-const navItems = [
-  { name: "Home", link: "/", icon: <IconHome size={18} /> },
-  { name: "Register", link: "/register", icon: <IconUserPlus size={18} /> },
-  { name: "Admin", link: "/login", icon: <IconLock size={18} /> },
+const navItems: CardNavItem[] = [
+  {
+    label: "Home",
+    bgColor: "#0D0716",
+    textColor: "#fff",
+    links: [
+      { label: "Back to Home", href: "/", ariaLabel: "Go to home page" },
+    ]
+  },
+  {
+    label: "Event",
+    bgColor: "#170D27",
+    textColor: "#fff",
+    links: [
+      { label: "About", href: "/#about", ariaLabel: "Learn about the event" },
+      { label: "Speakers", href: "/#speakers", ariaLabel: "View speakers" }
+    ]
+  },
+  {
+    label: "Connect",
+    bgColor: "#271E37",
+    textColor: "#fff",
+    links: [
+      { label: "Contact", href: "/#contact", ariaLabel: "Contact us" },
+    ]
+  }
 ];
 
 export default function RegisterPage() {
@@ -184,36 +201,31 @@ export default function RegisterPage() {
     }
   };
 
-  const inputClasses = cn(
-    "w-full rounded-xl border border-space-purple-mid/30 bg-space-black/50 px-4 py-3",
-    "text-white placeholder-zinc-500",
-    "transition-all duration-300",
-    "focus:border-space-purple-light focus:outline-none focus:ring-2 focus:ring-space-purple-light/20",
-    "hover:border-space-purple-mid/50"
-  );
-
-  const labelClasses = "block mb-2 text-sm font-medium text-zinc-300";
-
   return (
-    <main className="min-h-screen pt-24 pb-12 px-4">
-      <FloatingNavbar navItems={navItems} />
+    <main className={styles.main}>
+      <CardNav
+        items={navItems}
+        baseColor="transparent"
+        menuColor="#fff"
+        buttonBgColor="#6a1740"
+        buttonTextColor="#fff"
+        buttonLabel="Home"
+        onButtonClick={() => window.location.href = "/"}
+      />
 
-      <div className="mx-auto max-w-2xl">
+      <div className={styles.container}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="glass rounded-3xl p-8 sm:p-12"
+          className={styles.formCard}
         >
           {/* Header */}
-          <div className="mb-8 text-center">
-            <h1 className="mb-2 text-3xl font-bold text-white sm:text-4xl">
-              Register for{" "}
-              <span className="bg-gradient-to-r from-space-purple-light to-space-magenta-mid bg-clip-text text-transparent">
-                AI Summit
-              </span>
+          <div className={styles.header}>
+            <h1 className={styles.title}>
+              Register for <span className={styles.titleAccent}>AI Summit</span>
             </h1>
-            <p className="text-zinc-400">
+            <p className={styles.subtitle}>
               Join Arizona State University&apos;s premier AI conference
             </p>
           </div>
@@ -223,12 +235,7 @@ export default function RegisterPage() {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className={cn(
-                "mb-6 rounded-xl p-4",
-                message.type === "success"
-                  ? "border border-green-500/30 bg-green-500/10 text-green-400"
-                  : "border border-red-500/30 bg-red-500/10 text-red-400"
-              )}
+              className={`${styles.message} ${message.type === "success" ? styles.success : styles.error}`}
             >
               {message.text.split("\n").map((line, i) => (
                 <div key={i}>{line}</div>
@@ -237,11 +244,11 @@ export default function RegisterPage() {
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className={styles.form}>
             {/* Name Row */}
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div>
-                <label htmlFor="first_name" className={labelClasses}>
+            <div className={styles.nameRow}>
+              <div className={styles.formGroup}>
+                <label htmlFor="first_name" className={styles.label}>
                   First Name *
                 </label>
                 <input
@@ -252,12 +259,12 @@ export default function RegisterPage() {
                   onChange={handleInputChange}
                   maxLength={1000}
                   required
-                  className={inputClasses}
+                  className={styles.input}
                   placeholder="John"
                 />
               </div>
-              <div>
-                <label htmlFor="middle_name" className={labelClasses}>
+              <div className={styles.formGroup}>
+                <label htmlFor="middle_name" className={styles.label}>
                   Middle Name
                 </label>
                 <input
@@ -267,12 +274,12 @@ export default function RegisterPage() {
                   value={formData.middle_name}
                   onChange={handleInputChange}
                   maxLength={1000}
-                  className={inputClasses}
+                  className={styles.input}
                   placeholder="(Optional)"
                 />
               </div>
-              <div>
-                <label htmlFor="last_name" className={labelClasses}>
+              <div className={styles.formGroup}>
+                <label htmlFor="last_name" className={styles.label}>
                   Last Name *
                 </label>
                 <input
@@ -283,15 +290,15 @@ export default function RegisterPage() {
                   onChange={handleInputChange}
                   maxLength={1000}
                   required
-                  className={inputClasses}
+                  className={styles.input}
                   placeholder="Doe"
                 />
               </div>
             </div>
 
             {/* Email */}
-            <div>
-              <label htmlFor="email" className={labelClasses}>
+            <div className={styles.formGroup}>
+              <label htmlFor="email" className={styles.label}>
                 Email *
               </label>
               <input
@@ -302,17 +309,17 @@ export default function RegisterPage() {
                 onChange={handleInputChange}
                 maxLength={1000}
                 required
-                className={inputClasses}
+                className={styles.input}
                 placeholder="you@asu.edu"
               />
-              <p className="mt-1 text-xs text-zinc-500">
+              <p className={styles.hint}>
                 Must be @asu.edu or @gmail.com
               </p>
             </div>
 
             {/* Academic Year */}
-            <div>
-              <label htmlFor="academic_year" className={labelClasses}>
+            <div className={styles.formGroup}>
+              <label htmlFor="academic_year" className={styles.label}>
                 Academic Year *
               </label>
               <select
@@ -321,7 +328,7 @@ export default function RegisterPage() {
                 value={formData.academic_year}
                 onChange={handleInputChange}
                 required
-                className={inputClasses}
+                className={styles.input}
               >
                 <option value="">Select your academic year...</option>
                 <option value="Freshman">Freshman</option>
@@ -340,10 +347,10 @@ export default function RegisterPage() {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
-                className="space-y-6"
+                className={styles.conditionalFields}
               >
-                <div>
-                  <label htmlFor="major" className={labelClasses}>
+                <div className={styles.formGroup}>
+                  <label htmlFor="major" className={styles.label}>
                     Major *
                   </label>
                   <input
@@ -354,13 +361,13 @@ export default function RegisterPage() {
                     onChange={handleInputChange}
                     maxLength={1000}
                     required
-                    className={inputClasses}
+                    className={styles.input}
                     placeholder="Computer Science"
                   />
                 </div>
 
-                <div>
-                  <label htmlFor="why_attend" className={labelClasses}>
+                <div className={styles.formGroup}>
+                  <label htmlFor="why_attend" className={styles.label}>
                     Why do you want to attend? *
                   </label>
                   <textarea
@@ -370,55 +377,42 @@ export default function RegisterPage() {
                     onChange={handleInputChange}
                     maxLength={10000}
                     rows={5}
-                    className={cn(inputClasses, "resize-none")}
+                    className={styles.textarea}
                     placeholder="Tell us about your interest in AI and what you hope to gain from attending..."
                   />
-                  <div className="mt-1 flex items-center justify-between text-xs">
-                    <span className="text-zinc-500">Minimum 500 characters</span>
-                    <span
-                      className={cn(
-                        charCount >= 500 ? "text-green-400" : "text-zinc-500"
-                      )}
-                    >
+                  <div className={styles.charCountRow}>
+                    <span className={styles.hint}>Minimum 500 characters</span>
+                    <span className={charCount >= 500 ? styles.charCountMet : styles.charCount}>
                       {charCount} / 500
                     </span>
                   </div>
                 </div>
 
-                <div>
-                  <label htmlFor="resume" className={labelClasses}>
+                <div className={styles.formGroup}>
+                  <label htmlFor="resume" className={styles.label}>
                     Resume (PDF) *
                   </label>
-                  <div className="relative">
-                    <input
-                      type="file"
-                      id="resume"
-                      name="resume"
-                      onChange={handleFileChange}
-                      accept="application/pdf"
-                      required={!isStaff}
-                      className={cn(
-                        inputClasses,
-                        "file:mr-4 file:rounded-full file:border-0",
-                        "file:bg-space-purple-light/20 file:px-4 file:py-2",
-                        "file:text-sm file:font-medium file:text-space-purple-light",
-                        "file:cursor-pointer file:transition-colors",
-                        "file:hover:bg-space-purple-light/30"
-                      )}
-                    />
-                  </div>
-                  <p className="mt-1 text-xs text-zinc-500">
+                  <input
+                    type="file"
+                    id="resume"
+                    name="resume"
+                    onChange={handleFileChange}
+                    accept="application/pdf"
+                    required={!isStaff}
+                    className={styles.fileInput}
+                  />
+                  <p className={styles.hint}>
                     Max 5MB, PDF only
                     {resumeFile && (
-                      <span className="ml-2 text-green-400">
-                        ✓ {resumeFile.name}
+                      <span className={styles.fileSelected}>
+                        {" "}✓ {resumeFile.name}
                       </span>
                     )}
                   </p>
                 </div>
 
-                <div>
-                  <label htmlFor="relevant_courses" className={labelClasses}>
+                <div className={styles.formGroup}>
+                  <label htmlFor="relevant_courses" className={styles.label}>
                     Relevant Courses
                   </label>
                   <input
@@ -428,16 +422,16 @@ export default function RegisterPage() {
                     value={formData.relevant_courses}
                     onChange={handleInputChange}
                     maxLength={1000}
-                    className={inputClasses}
+                    className={styles.input}
                     placeholder="e.g., Machine Learning, Data Science, Neural Networks"
                   />
-                  <p className="mt-1 text-xs text-zinc-500">
+                  <p className={styles.hint}>
                     Comma-separated list (optional)
                   </p>
                 </div>
 
-                <div>
-                  <label htmlFor="prior_work_exp" className={labelClasses}>
+                <div className={styles.formGroup}>
+                  <label htmlFor="prior_work_exp" className={styles.label}>
                     Prior Work Experience
                   </label>
                   <textarea
@@ -447,7 +441,7 @@ export default function RegisterPage() {
                     onChange={handleInputChange}
                     maxLength={10000}
                     rows={3}
-                    className={cn(inputClasses, "resize-none")}
+                    className={styles.textarea}
                     placeholder="Brief description of relevant work experience (optional)"
                   />
                 </div>
@@ -455,17 +449,17 @@ export default function RegisterPage() {
             )}
 
             {/* Photo Release */}
-            <div className="rounded-xl border border-space-purple-mid/30 bg-space-purple-dark/20 p-4">
-              <label className="flex cursor-pointer items-start gap-3">
+            <div className={styles.checkboxContainer}>
+              <label className={styles.checkboxLabel}>
                 <input
                   type="checkbox"
                   name="photo_release"
                   checked={formData.photo_release}
                   onChange={handleCheckboxChange}
                   required
-                  className="mt-1 h-5 w-5 rounded border-space-purple-mid bg-space-black accent-space-purple-light"
+                  className={styles.checkbox}
                 />
-                <span className="text-sm text-zinc-300">
+                <span className={styles.checkboxText}>
                   I acknowledge and agree to the photo release policy. Photos
                   and videos taken during the event may be used for promotional
                   purposes. *
@@ -474,31 +468,26 @@ export default function RegisterPage() {
             </div>
 
             {/* Submit Button */}
-            <div className="pt-4">
-              <GlowButton
-                type="submit"
-                disabled={loading}
-                className="w-full"
-              >
-                {loading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    Submitting...
-                  </span>
-                ) : (
-                  "Submit Registration"
-                )}
-              </GlowButton>
-            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className={styles.submitButton}
+            >
+              {loading ? (
+                <span className={styles.loadingText}>
+                  <span className={styles.spinner}></span>
+                  Submitting...
+                </span>
+              ) : (
+                "Submit Registration"
+              )}
+            </button>
           </form>
 
           {/* Footer link */}
-          <div className="mt-8 text-center text-sm text-zinc-500">
+          <div className={styles.footerLink}>
             Already registered?{" "}
-            <Link
-              href="/"
-              className="text-space-purple-light transition-colors hover:text-space-magenta-light"
-            >
+            <Link href="/" className={styles.link}>
               Return to home
             </Link>
           </div>

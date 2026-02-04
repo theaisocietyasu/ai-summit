@@ -1,0 +1,95 @@
+.glow-effect {
+  position: absolute;
+  inset: -2px;
+  border-radius: 16px;
+  background: var(--glow-colors);
+  filter: blur(var(--glow-blur));
+  opacity: 0.7;
+  z-index: 0;
+  transform: scale(var(--glow-scale));
+}
+
+.glow-effect--rotate {
+  animation: glow-rotate var(--glow-duration) linear infinite;
+}
+
+.glow-effect--pulse {
+  animation: glow-pulse var(--glow-duration) ease-in-out infinite;
+}
+
+.glow-effect--colorShift {
+  animation: glow-color-shift var(--glow-duration) ease-in-out infinite;
+}
+
+@keyframes glow-rotate {
+  from {
+    transform: scale(var(--glow-scale)) rotate(0deg);
+  }
+  to {
+    transform: scale(var(--glow-scale)) rotate(360deg);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(var(--glow-scale));
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(calc(var(--glow-scale) * 1.05));
+  }
+}
+
+@keyframes glow-color-shift {
+  0%, 100% {
+    filter: blur(var(--glow-blur)) hue-rotate(0deg);
+  }
+  50% {
+    filter: blur(var(--glow-blur)) hue-rotate(30deg);
+  }
+}
+
+/* Glow Button */
+.glow-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.glow-button-content {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background: rgba(1, 0, 3, 0.9);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 14px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.glow-button:hover .glow-button-content {
+  background: rgba(1, 0, 3, 0.95);
+  border-color: rgba(168, 85, 247, 0.5);
+  transform: translateY(-2px);
+}
+
+.glow-button--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.glow-button--disabled .glow-button-content {
+  transform: none;
+}

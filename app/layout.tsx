@@ -15,6 +15,11 @@ export const metadata: Metadata = {
     "Artificial Intelligence",
     "The AI Society",
   ],
+  icons: {
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
+  },
 };
 
 export default function RootLayout({

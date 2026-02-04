@@ -3,6 +3,9 @@
 import styles from "./home.module.css";
 import CardNav from "@/components/ui/navigation/CardNav";
 import MagicBento from "@/components/ui/cards/MagicBento";
+import GradientText from "@/components/ui/effects/GradientText";
+import BlurText from "@/components/ui/effects/BlurText";
+import Countdown from "@/components/ui/effects/Countdown";
 import type { CardNavItem } from "@/components/ui/navigation/CardNav";
 import type { BentoCardData } from "@/components/ui/cards/MagicBento";
 
@@ -81,6 +84,9 @@ const bentoCards: BentoCardData[] = [
   }
 ];
 
+// Event date: February 27, 2026 at 5:00 PM
+const eventDate = new Date('2026-02-27T17:00:00');
+
 export default function Home() {
   const handleRegisterClick = () => {
     window.location.href = "/register";
@@ -88,10 +94,15 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
+      {/* Logo - Top Left */}
+      <a href="/" className={styles.logoContainer}>
+        <img src="/logo.svg" alt="AIS Logo" className={styles.logoImage} />
+      </a>
+
       <CardNav
         items={navItems}
-        baseColor="#fff"
-        menuColor="#000"
+        baseColor="transparent"
+        menuColor="#fff"
         buttonBgColor="#6a1740"
         buttonTextColor="#fff"
         buttonLabel="Register"
@@ -107,11 +118,33 @@ export default function Home() {
               Coming Soon
             </span>
             <h1 className={styles.title}>
-              AI Summit <span className={styles.titleAccent}>2025</span>
+              <BlurText
+                text="AI Summit"
+                delay={100}
+                animateBy="words"
+                direction="top"
+                className={styles.titleBlur}
+              />
+              {' '}
+              <span className={styles.title2026}>
+                <BlurText
+                  text="2026"
+                  delay={150}
+                  animateBy="characters"
+                  direction="top"
+                />
+              </span>
             </h1>
             <p className={styles.subtitle}>
               Arizona State University&apos;s Premier AI Conference
             </p>
+
+            {/* Event Date & Countdown */}
+            <div className={styles.eventInfo}>
+              <p className={styles.eventDate}>February 27, 2026 at 5:00 PM</p>
+              <Countdown targetDate={eventDate} />
+            </div>
+
             <p className={styles.description}>
               Join us for an immersive experience exploring the frontiers of artificial intelligence,
               machine learning, and the future of technology.
@@ -131,7 +164,13 @@ export default function Home() {
         <section className={styles.contentSection} id="about">
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>
-              What to <span className={styles.titleAccent}>Expect</span>
+              What to{' '}
+              <GradientText
+                colors={['#6a1740', '#a855f7', '#4d2386', '#ec4899', '#6a1740']}
+                animationSpeed={5}
+              >
+                Expect
+              </GradientText>
             </h2>
             <p className={styles.sectionDescription}>
               Discover everything AI Summit has to offer
@@ -154,7 +193,7 @@ export default function Home() {
 
         {/* Footer */}
         <footer className={styles.footer}>
-          <p>© 2025 The AI Society at ASU. All rights reserved.</p>
+          <p>© 2026 The AI Society at ASU. All rights reserved.</p>
         </footer>
       </div>
     </main>

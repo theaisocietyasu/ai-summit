@@ -7,16 +7,25 @@
   max-width: 800px;
   z-index: 99;
   box-sizing: border-box;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.card-nav-container.card-nav-hidden {
+  transform: translateX(-50%) translateY(-120%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .card-nav {
   display: block;
   height: 60px;
   padding: 0;
-  background-color: white;
-  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  background: rgba(1, 0, 3, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 0.75rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
   position: relative;
   overflow: hidden;
   will-change: height;
@@ -42,7 +51,9 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  gap: 6px;
+  gap: 5px;
+  color: #fff;
+  padding: 0 0.5rem;
 }
 
 .hamburger-menu:hover .hamburger-line {
@@ -50,22 +61,26 @@
 }
 
 .hamburger-line {
-  width: 30px;
+  width: 24px;
   height: 2px;
-  background-color: currentColor;
+  background-color: #fff;
   transition:
     transform 0.25s ease,
-    opacity 0.2s ease,
-    margin 0.3s ease;
+    opacity 0.2s ease;
   transform-origin: 50% 50%;
 }
 
 .hamburger-menu.open .hamburger-line:first-child {
-  transform: translateY(4px) rotate(45deg);
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger-menu.open .hamburger-line:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
 }
 
 .hamburger-menu.open .hamburger-line:last-child {
-  transform: translateY(-4px) rotate(-45deg);
+  transform: translateY(-7px) rotate(-45deg);
 }
 
 .logo-container {
@@ -84,10 +99,7 @@
 .logo-text {
   font-size: 1.25rem;
   font-weight: 700;
-  background: linear-gradient(90deg, #6a1740, #4d2386);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #fff;
 }
 
 .card-nav-cta-button {
