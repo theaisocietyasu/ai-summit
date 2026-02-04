@@ -3,6 +3,33 @@
   width: 100%;
 }
 
+/* Logo */
+.logoContainer {
+  position: fixed;
+  top: 1.5rem;
+  left: 1.5rem;
+  z-index: 100;
+  text-decoration: none;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.logoContainer:hover {
+  transform: scale(1.05);
+}
+
+.logoImage {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  filter: brightness(1.1);
+}
+
+@media (max-width: 768px) {
+  .logoContainer {
+    display: none;
+  }
+}
+
 .container {
   width: 100%;
   max-width: 1200px;
@@ -59,6 +86,41 @@
   letter-spacing: -0.02em;
   color: #fff;
   margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.titleBlur {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.titleGradient {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.title2026 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.title2026 span {
+  background: linear-gradient(90deg, #6a1740, #a855f7, #4d2386, #ec4899, #6a1740);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 5s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .titleAccent {
@@ -72,13 +134,24 @@
   font-size: 1.5rem;
   font-weight: 500;
   color: #a1a1aa;
+  margin-bottom: 1rem;
+}
+
+.eventInfo {
   margin-bottom: 1.5rem;
+}
+
+.eventDate {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #a855f7;
+  margin-bottom: 0.5rem;
 }
 
 .description {
   font-size: 1.125rem;
   line-height: 1.7;
-  color: #71717a;
+  color: #d4d4d8;
   max-width: 600px;
   margin: 0 auto 2.5rem;
 }
