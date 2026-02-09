@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import CardNav from "@/components/ui/navigation/CardNav";
 import SpeakersSection from "@/components/SpeakersSection/SpeakersSection";
 import { navItems } from "@/lib/navItems";
@@ -30,27 +29,7 @@ export default function SpeakersPage() {
         onButtonClick={handleRegisterClick}
       />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-6">
-        {/* Page header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-12 pt-32 text-center"
-        >
-          <h1 className="mb-8 text-4xl font-bold text-white sm:text-5xl">
-            Featured{" "}
-            <span className="bg-gradient-to-r from-space-magenta-mid via-space-magenta-light to-space-purple-light bg-clip-text text-transparent">
-              Speakers
-            </span>
-          </h1>
-          <p className="mx-auto max-w-2xl text-xl leading-relaxed text-zinc-400">
-            Learn from industry leaders and AI pioneers at the forefront of innovation
-          </p>
-        </motion.div>
-
-        <SpeakersSection />
-      </div>
+      <SpeakersSection />
     </main>
   );
 }
