@@ -32,6 +32,10 @@ export default function LoginPage() {
 
   return (
     <div className={styles.container}>
+      <a href="/" className={styles.logo}>
+        <img src="/logo.png" alt="AIS Logo" className={styles.logoImage} />
+      </a>
+
       <div className={styles.loginBox}>
         <div className={styles.header}>
           <h1>Admin Login</h1>
