@@ -23,7 +23,7 @@ export default function AdminLayout({
       <nav className={styles.nav}>
         <div className={styles.navContainer}>
           <Link href="/" className={styles.logo}>
-            AI Summit
+            <img src="/logo.png" alt="AI Summit" className={styles.logoImage} />
           </Link>
           <ul className={styles.navLinks}>
             <li>
