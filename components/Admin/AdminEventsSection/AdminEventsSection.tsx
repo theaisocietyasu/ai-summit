@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import styles from "./AdminEventsSection.module.css";
+import { normalizeTag } from "@/lib/normalizeTag";
 
 interface Event {
   _id?: string;
@@ -70,14 +71,11 @@ export default function AdminEventsSection() {
   };
 
   const handleAddTag = () => {
-    if (
-      tagInput.trim() &&
-      formData.tags &&
-      !formData.tags.includes(tagInput.trim())
-    ) {
+    const normalized = normalizeTag(tagInput);
+    if (normalized && formData.tags && !formData.tags.includes(normalized)) {
       setFormData((prev) => ({
         ...prev,
-        tags: [...(prev.tags || []), tagInput.trim()],
+        tags: [...(prev.tags || []), normalized],
       }));
       setTagInput("");
     }

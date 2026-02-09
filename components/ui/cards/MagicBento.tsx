@@ -15,6 +15,8 @@ export interface BentoCardData {
   description: string;
   label: string;
   icon?: ReactNode;
+  href?: string;
+  hoverOverlay?: ReactNode;
 }
 
 const createParticleElement = (x: number, y: number, color = DEFAULT_GLOW_COLOR) => {
@@ -561,6 +563,30 @@ const MagicBento: React.FC<MagicBentoProps> = ({
             } as React.CSSProperties
           };
 
+          const cardInner = (
+            <>
+              <div className="magic-bento-card__header">
+                <div className="magic-bento-card__label">{card.label}</div>
+                {card.icon && <div className="magic-bento-card__icon">{card.icon}</div>}
+              </div>
+              <div className="magic-bento-card__content">
+                <h2 className="magic-bento-card__title">{card.title}</h2>
+                <p className="magic-bento-card__description">{card.description}</p>
+              </div>
+              {card.hoverOverlay && (
+                <div className="magic-bento-card__hover-overlay">
+                  {card.hoverOverlay}
+                </div>
+              )}
+            </>
+          );
+
+          const wrappedInner = card.href ? (
+            <a href={card.href} className="magic-bento-card__link">
+              {cardInner}
+            </a>
+          ) : cardInner;
+
           if (enableStars) {
             return (
               <ParticleCard
@@ -573,14 +599,7 @@ const MagicBento: React.FC<MagicBentoProps> = ({
                 clickEffect={clickEffect}
                 enableMagnetism={enableMagnetism}
               >
-                <div className="magic-bento-card__header">
-                  <div className="magic-bento-card__label">{card.label}</div>
-                  {card.icon && <div className="magic-bento-card__icon">{card.icon}</div>}
-                </div>
-                <div className="magic-bento-card__content">
-                  <h2 className="magic-bento-card__title">{card.title}</h2>
-                  <p className="magic-bento-card__description">{card.description}</p>
-                </div>
+                {wrappedInner}
               </ParticleCard>
             );
           }
@@ -590,14 +609,7 @@ const MagicBento: React.FC<MagicBentoProps> = ({
               key={index}
               {...cardProps}
             >
-              <div className="magic-bento-card__header">
-                <div className="magic-bento-card__label">{card.label}</div>
-                {card.icon && <div className="magic-bento-card__icon">{card.icon}</div>}
-              </div>
-              <div className="magic-bento-card__content">
-                <h2 className="magic-bento-card__title">{card.title}</h2>
-                <p className="magic-bento-card__description">{card.description}</p>
-              </div>
+              {wrappedInner}
             </div>
           );
         })}
