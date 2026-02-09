@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/server/auth";
 import { getDb } from "@/lib/server/mongo";
 import { deleteFromGridFS, uploadToGridFS } from "@/lib/server/gridfs";
 import { EventSchema } from "@/lib/server/validation";
+import { normalizeTags } from "@/lib/normalizeTag";
 
 export const runtime = "nodejs";
 
@@ -21,20 +22,24 @@ function parseTags(raw: FormDataEntryValue | null, fallback: unknown): string[] 
       try {
         const parsed = JSON.parse(trimmed);
         if (Array.isArray(parsed)) {
-          return parsed.map((t) => String(t).trim()).filter((t) => t.length > 0);
+          return normalizeTags(
+            parsed.map((t) => String(t).trim()).filter((t) => t.length > 0)
+          );
         }
       } catch {
         // ignore
       }
     }
 
-    return trimmed
-      .split(",")
-      .map((s) => s.trim())
-      .filter((s) => s.length > 0);
+    return normalizeTags(
+      trimmed
+        .split(",")
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0)
+    );
   }
 
-  return Array.isArray(fallback) ? fallback : [];
+  return Array.isArray(fallback) ? normalizeTags(fallback as string[]) : [];
 }
 
 export async function PUT(

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { GlassCard } from "@/components/ui/cards";
 import { getEvents } from "@/app/lib/api";
+import { normalizeTag } from "@/lib/normalizeTag";
 
 interface Event {
   _id: string;
@@ -107,7 +108,7 @@ export default function EventsSection() {
                           key={tagIndex}
                           className="inline-flex items-center rounded-full border border-space-purple-mid/50 bg-space-purple-dark/30 px-3 py-1 text-xs font-medium text-space-purple-light"
                         >
-                          {tag}
+                          {normalizeTag(tag)}
                         </span>
                       ))}
                     </div>

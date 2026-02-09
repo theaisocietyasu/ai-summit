@@ -1,0 +1,252 @@
+/* Events page styles */
+
+.contentContainer {
+  position: relative;
+  z-index: 10;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Page Header */
+.pageHeader {
+  margin-bottom: 5rem;
+  padding-top: 8rem;
+  text-align: center;
+}
+
+.pageTitle {
+  margin-bottom: 2rem;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.pageTitleGradient {
+  background: linear-gradient(to right, #6a1740, #4d2386, #342b8a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.pageSubtitle {
+  max-width: 42rem;
+  margin: 0 auto;
+  font-size: 1.25rem;
+  line-height: 1.7;
+  color: #a1a1aa;
+}
+
+/* Loading */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 5rem 0;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #4d2386;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText {
+  color: #a1a1aa;
+}
+
+/* Empty State */
+.emptyState {
+  max-width: 32rem;
+  margin: 0 auto;
+  padding: 5rem 3rem;
+  text-align: center;
+  background: rgba(1, 0, 3, 0.4);
+  border: 1px solid rgba(45, 41, 118, 0.3);
+  border-radius: 1.5rem;
+  backdrop-filter: blur(12px);
+}
+
+.emptyIcon {
+  font-size: 3.75rem;
+  margin-bottom: 2rem;
+}
+
+.emptyTitle {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.emptyText {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: #a1a1aa;
+}
+
+/* Category sections */
+.sectionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+  padding-bottom: 5rem;
+}
+
+.categorySection {
+  scroll-margin-top: 8rem;
+}
+
+.sectionTitle {
+  margin-bottom: 2.5rem;
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.sectionIcon {
+  margin-right: 0.75rem;
+}
+
+.sectionCount {
+  margin-left: 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 400;
+  color: #71717a;
+}
+
+/* Event card grid */
+.eventGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+/* Card wrapper (motion.div) */
+.cardWrapper {
+  height: 100%;
+}
+
+/* Event card */
+.eventCard {
+  height: 100%;
+  background: rgba(1, 0, 3, 0.4);
+  border: 1px solid rgba(45, 41, 118, 0.3);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  overflow: hidden;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.eventCard:hover {
+  border-color: rgba(52, 43, 138, 0.5);
+  transform: translateY(-4px);
+}
+
+/* Event image */
+.imageContainer {
+  position: relative;
+  margin-bottom: 1rem;
+  height: 12rem;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 0.75rem;
+}
+
+.imageOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: linear-gradient(to top, rgba(1, 0, 3, 0.8), transparent, transparent);
+}
+
+.eventImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.eventCard:hover .eventImage {
+  transform: scale(1.1);
+}
+
+/* Event content */
+.eventTitle {
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+.eventCard:hover .eventTitle {
+  color: #342b8a;
+}
+
+.eventDescription {
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #a1a1aa;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Tags */
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #342b8a;
+  background: rgba(28, 7, 88, 0.3);
+  border: 1px solid rgba(45, 41, 118, 0.5);
+  border-radius: 9999px;
+}
+
+/* Suspense fallback */
+.suspenseFallback {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (min-width: 640px) {
+  .pageTitle {
+    font-size: 3rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .eventGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .eventGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

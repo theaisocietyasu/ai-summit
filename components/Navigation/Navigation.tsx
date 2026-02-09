@@ -16,17 +16,17 @@ const navItems = [
   },
   {
     name: "Speakers",
-    link: "#speakers",
+    link: "/speakers",
     icon: <IconUsers size={18} />,
   },
   {
     name: "Events",
-    link: "#events",
+    link: "/events",
     icon: <IconCalendarEvent size={18} />,
   },
   {
     name: "Sponsors",
-    link: "#sponsors",
+    link: "/sponsors",
     icon: <IconBuildingSkyscraper size={18} />,
   },
 ];

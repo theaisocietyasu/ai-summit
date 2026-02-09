@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { normalizeTag, normalizeTags } from "@/lib/normalizeTag";
 
 const MAX_STRING_LENGTH = 1000;
 const MAX_BIO_LENGTH = 5000;
@@ -45,7 +46,10 @@ export const EventSchema = z.object({
     .min(1, "Event description is required")
     .max(MAX_DESCRIPTION_LENGTH),
   thumbnail_url: z.string().trim().min(1, "Thumbnail URL is required"),
-  tags: z.array(z.string().trim().max(100)).default([]),
+  tags: z
+    .array(z.string().trim().max(100).transform((t) => normalizeTag(t)))
+    .default([])
+    .transform((arr) => normalizeTags(arr)),
 });
 
 export const SponsorSchema = z.object({

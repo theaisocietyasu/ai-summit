@@ -1,17 +1,18 @@
 .main {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  background: linear-gradient(135deg, #010003 0%, #1c0758 50%, #2b0c33 100%);
   min-height: 100vh;
   color: #e4e4e4;
 }
 
 .nav {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(1, 0, 3, 0.7);
   padding: 15px 0;
   position: sticky;
   top: 0;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   z-index: 100;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(77, 35, 134, 0.3);
 }
 
 .navContainer {
@@ -24,15 +25,20 @@
 }
 
 .logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #00d9ff;
   text-decoration: none;
-  transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  transition: transform 0.3s ease;
 }
 
 .logo:hover {
-  color: #a855f7;
+  transform: scale(1.05);
+}
+
+.logoImage {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
 }
 
 .navLinks {
@@ -54,7 +60,7 @@
 
 .navLinks a:hover,
 .navLinks button:hover {
-  color: #00d9ff;
+  color: #7B73F0;
 }
 
 .container {
@@ -71,20 +77,22 @@
 }
 
 .adminSidebar {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(1, 0, 3, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 15px;
   padding: 20px;
   height: fit-content;
   position: sticky;
   top: 100px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(77, 35, 134, 0.3);
 }
 
 .adminSidebar h3 {
-  color: #00d9ff;
+  color: #7B73F0;
   margin-bottom: 20px;
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(77, 35, 134, 0.3);
 }
 
 .adminSidebar ul {
@@ -111,25 +119,27 @@
 
 .navLink:hover,
 .navLink.active {
-  background: rgba(0, 217, 255, 0.2);
-  color: #00d9ff;
+  background: rgba(77, 35, 134, 0.3);
+  color: #7B73F0;
 }
 
 .adminContent {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(1, 0, 3, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 15px;
   padding: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(77, 35, 134, 0.3);
 }
 
 .adminContent h2 {
-  color: #00d9ff;
+  color: #7B73F0;
   margin-bottom: 30px;
   font-size: 1.8rem;
 }
 
 .adminContent h3 {
-  color: #00d9ff;
+  color: #7B73F0;
   margin-top: 40px;
   margin-bottom: 20px;
 }

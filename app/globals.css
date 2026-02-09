@@ -1,4 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-space-black: #010003;
+  --color-space-purple-dark: #1c0758;
+  --color-space-purple-mid: #2d2976;
+  --color-space-purple-light: #342b8a;
+  --color-space-purple-accent: #341865;
+  --color-space-magenta-dark: #2b0c33;
+  --color-space-magenta-mid: #6a1740;
+  --color-space-magenta-light: #4d2386;
+}
 
 :root {
   /* Colors */
