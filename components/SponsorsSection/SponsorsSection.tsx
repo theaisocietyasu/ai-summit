@@ -75,6 +75,7 @@ export default function SponsorsSection() {
                   delay: index * 0.05,
                 }}
                 viewport={{ once: true }}
+                className={styles.cardWrapper}
               >
                 <div className={styles.sponsorCard}>
                   {/* Glow effect on hover */}

@@ -133,6 +133,11 @@
   gap: 2rem;
 }
 
+/* Card wrapper (motion.div) */
+.cardWrapper {
+  height: 100%;
+}
+
 /* Event card */
 .eventCard {
   height: 100%;

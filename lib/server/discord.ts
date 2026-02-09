@@ -33,11 +33,11 @@ function parseCommaSeparatedEnv(value: string | undefined): string[] {
 }
 
 export function getAllowedLoginRoleIds(): string[] {
-  return parseCommaSeparatedEnv(process.env.ALLOWED_LOGIN_ROLE_IDS);
+  return parseCommaSeparatedEnv(process.env.ADMIN_ROLE_ID);
 }
 
 export function getDiscordRedirectUri(): string {
-  return requireEnv("DISCORD_REDIRECT_URI");
+  return requireEnv("DISCORD_CALLBACK_URL");
 }
 
 export function getDiscordAuthUrl(state: string): string {

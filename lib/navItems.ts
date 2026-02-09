@@ -21,6 +21,8 @@ export const navItems: CardNavItem[] = [
     links: [
       { label: "Speakers", href: "/speakers", ariaLabel: "View speakers" },
       { label: "Events", href: "/events", ariaLabel: "View events" },
+      { label: "Workshops", href: "/workshops", ariaLabel: "View workshops" },
+      { label: "Resources", href: "/resources", ariaLabel: "View resources" },
     ],
   },
   {

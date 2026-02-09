@@ -13,7 +13,7 @@ export const EVENT_TAG_CATEGORIES = {
     description:
       "Hands-on learning experiences with cutting-edge AI tools and technologies",
     icon: "\u{1F6E0}\u{FE0F}",
-    href: "/events?category=workshops",
+    href: "/workshops",
   },
   resources: {
     tag: "resources",
@@ -21,7 +21,7 @@ export const EVENT_TAG_CATEGORIES = {
     description:
       "Access materials, recordings, and tools to continue your AI journey",
     icon: "\u{1F4DA}",
-    href: "/events?category=resources",
+    href: "/resources",
   },
 } as const;
 
