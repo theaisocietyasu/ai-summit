@@ -53,49 +53,10 @@
   color: #a1a1aa;
 }
 
-/* Tier sections */
-.tiersContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 4rem;
-}
-
-.tierSection {
-  text-align: center;
-}
-
-.tierTitle {
-  display: inline-block;
-  margin-bottom: 2rem;
-  font-size: 1.5rem;
-  font-weight: 700;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.tierPlatinum {
-  background: linear-gradient(to right, #d4d4d8, #e4e4e7, #a1a1aa);
-}
-
-.tierGold {
-  background: linear-gradient(to right, #eab308, #fde047, #ca8a04);
-}
-
-.tierSilver {
-  background: linear-gradient(to right, #a1a1aa, #d4d4d8, #71717a);
-}
-
-.tierBronze {
-  background: linear-gradient(to right, #9a3412, #ea580c, #c2410c);
-}
-
-/* Sponsor logos grid */
-.logosGrid {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
+/* Sponsors grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 2rem;
 }
 
@@ -103,10 +64,11 @@
 .sponsorCard {
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 0.75rem;
-  padding: 1rem;
+  border-radius: 1rem;
+  padding: 1.5rem;
   background: rgba(1, 0, 3, 0.4);
   border: 1px solid rgba(45, 41, 118, 0.3);
   backdrop-filter: blur(12px);
@@ -115,13 +77,13 @@
 
 .sponsorCard:hover {
   border-color: rgba(52, 43, 138, 0.5);
-  transform: translateY(-5px) scale(1.05);
+  transform: translateY(-5px);
 }
 
 .cardGlow {
   position: absolute;
   inset: 0;
-  border-radius: 0.75rem;
+  border-radius: 1rem;
   background: linear-gradient(to right, rgba(52, 43, 138, 0), rgba(77, 35, 134, 0.2), rgba(52, 43, 138, 0));
   opacity: 0;
   filter: blur(20px);
@@ -132,9 +94,17 @@
   opacity: 1;
 }
 
-.sponsorLogo {
+.logoWrapper {
   position: relative;
   z-index: 10;
+  width: 100%;
+  height: 6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sponsorLogo {
   max-height: 100%;
   max-width: 100%;
   object-fit: contain;
@@ -146,25 +116,14 @@
   filter: brightness(1.1);
 }
 
-/* Tier-specific sizes */
-.sizePlatinum {
-  height: 6rem;
-  width: 12rem;
-}
-
-.sizeGold {
-  height: 5rem;
-  width: 10rem;
-}
-
-.sizeSilver {
-  height: 4rem;
-  width: 8rem;
-}
-
-.sizeBronze {
-  height: 3.5rem;
-  width: 7rem;
+.sponsorName {
+  position: relative;
+  z-index: 10;
+  color: #fff;
+  text-align: center;
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
 /* Empty State */
@@ -230,5 +189,12 @@
 @media (min-width: 640px) {
   .title {
     font-size: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
   }
 }

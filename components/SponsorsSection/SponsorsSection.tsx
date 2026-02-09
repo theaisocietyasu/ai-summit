@@ -7,44 +7,14 @@ import { motion } from "framer-motion";
 import { getSponsors } from "@/app/lib/api";
 import styles from "./SponsorsSection.module.css";
 
-type SponsorTier = "platinum" | "gold" | "silver" | "bronze";
-
 interface Sponsor {
   _id: string;
   sponsor_name: string;
-  sponsor_tier: SponsorTier;
   sponsor_logo: string;
 }
 
-const TIER_ORDER: SponsorTier[] = ["platinum", "gold", "silver", "bronze"];
-
-const TIER_CONFIG: Record<SponsorTier, { name: string; gradientClass: string; sizeClass: string }> = {
-  platinum: {
-    name: "Platinum",
-    gradientClass: "tierPlatinum",
-    sizeClass: "sizePlatinum",
-  },
-  gold: {
-    name: "Gold",
-    gradientClass: "tierGold",
-    sizeClass: "sizeGold",
-  },
-  silver: {
-    name: "Silver",
-    gradientClass: "tierSilver",
-    sizeClass: "sizeSilver",
-  },
-  bronze: {
-    name: "Bronze",
-    gradientClass: "tierBronze",
-    sizeClass: "sizeBronze",
-  },
-};
-
 export default function SponsorsSection() {
-  const [sponsorsByTier, setSponsorsByTier] = useState<
-    Partial<Record<SponsorTier, Sponsor[]>>
-  >({});
+  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,14 +22,7 @@ export default function SponsorsSection() {
       try {
         const response: any = await getSponsors();
         if (response.success && response.data?.sponsors) {
-          const grouped: Partial<Record<SponsorTier, Sponsor[]>> = {};
-          response.data.sponsors.forEach((sponsor: Sponsor) => {
-            if (!grouped[sponsor.sponsor_tier]) {
-              grouped[sponsor.sponsor_tier] = [];
-            }
-            grouped[sponsor.sponsor_tier]!.push(sponsor);
-          });
-          setSponsorsByTier(grouped);
+          setSponsors(response.data.sponsors);
         }
       } catch (error) {
         console.error("Failed to load sponsors:", error);
@@ -70,8 +33,6 @@ export default function SponsorsSection() {
 
     fetchSponsors();
   }, []);
-
-  const hasSponsors = TIER_ORDER.some((tier) => sponsorsByTier[tier]?.length);
 
   return (
     <section id="sponsors" className={styles.section}>
@@ -102,58 +63,34 @@ export default function SponsorsSection() {
             <div className={styles.spinner} />
             <p className={styles.loadingText}>Loading sponsors...</p>
           </div>
-        ) : hasSponsors ? (
-          <div className={styles.tiersContainer}>
-            {TIER_ORDER.map(
-              (tier, tierIndex) =>
-                sponsorsByTier[tier]?.length && (
-                  <motion.div
-                    key={tier}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: tierIndex * 0.1 }}
-                    viewport={{ once: true }}
-                    className={styles.tierSection}
-                  >
-                    {/* Tier header */}
-                    <h3
-                      className={`${styles.tierTitle} ${styles[TIER_CONFIG[tier].gradientClass as keyof typeof styles]}`}
-                    >
-                      {TIER_CONFIG[tier].name} Sponsors
-                    </h3>
+        ) : sponsors.length > 0 ? (
+          <div className={styles.grid}>
+            {sponsors.map((sponsor, index) => (
+              <motion.div
+                key={sponsor._id}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{
+                  duration: 0.4,
+                  delay: index * 0.05,
+                }}
+                viewport={{ once: true }}
+              >
+                <div className={styles.sponsorCard}>
+                  {/* Glow effect on hover */}
+                  <div className={styles.cardGlow} />
 
-                    {/* Sponsor logos */}
-                    <div className={styles.logosGrid}>
-                      {sponsorsByTier[tier]!.map((sponsor, index) => (
-                        <motion.div
-                          key={sponsor._id}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          whileInView={{ opacity: 1, scale: 1 }}
-                          transition={{
-                            duration: 0.4,
-                            delay: index * 0.05,
-                          }}
-                          viewport={{ once: true }}
-                        >
-                          <div
-                            className={`${styles.sponsorCard} ${styles[TIER_CONFIG[tier].sizeClass as keyof typeof styles]}`}
-                          >
-                            {/* Glow effect on hover */}
-                            <div className={styles.cardGlow} />
-
-                            <img
-                              src={sponsor.sponsor_logo}
-                              alt={sponsor.sponsor_name}
-                              title={sponsor.sponsor_name}
-                              className={styles.sponsorLogo}
-                            />
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )
-            )}
+                  <div className={styles.logoWrapper}>
+                    <img
+                      src={sponsor.sponsor_logo}
+                      alt={sponsor.sponsor_name}
+                      className={styles.sponsorLogo}
+                    />
+                  </div>
+                  <p className={styles.sponsorName}>{sponsor.sponsor_name}</p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         ) : (
           <motion.div
