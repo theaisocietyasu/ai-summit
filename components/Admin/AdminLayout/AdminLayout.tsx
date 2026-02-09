@@ -3,7 +3,7 @@
 import Link from "next/link";
 import styles from "./AdminLayout.module.css";
 
-type Section = "banner" | "speakers" | "events" | "sponsors" | "registrations";
+type Section = "speakers" | "events" | "sponsors" | "registrations";
 
 interface AdminLayoutProps {
   activeSection: Section;
@@ -52,14 +52,6 @@ export default function AdminLayout({
           <aside className={styles.adminSidebar}>
             <h3>Admin Panel</h3>
             <ul>
-              <li>
-                <button
-                  className={`${styles.navLink} ${activeSection === "banner" ? styles.active : ""}`}
-                  onClick={() => onSectionChange("banner")}
-                >
-                  Banner
-                </button>
-              </li>
               <li>
                 <button
                   className={`${styles.navLink} ${activeSection === "speakers" ? styles.active : ""}`}

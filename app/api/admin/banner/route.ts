@@ -7,30 +7,6 @@ import { BannerSchema } from "@/lib/server/validation";
 
 export const runtime = "nodejs";
 
-export async function GET(request: Request): Promise<NextResponse> {
-  const auth = await requireAdmin(request);
-  if (!auth.ok) {
-    return NextResponse.json({ error: auth.error }, { status: auth.status });
-  }
-
-  try {
-    const db = await getDb();
-    const banner = await db
-      .collection("banners")
-      .findOne({}, { sort: { _id: -1 } });
-
-    return NextResponse.json({
-      success: true,
-      data: { banner: banner || null },
-    });
-  } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Server error" },
-      { status: 500 },
-    );
-  }
-}
-
 export async function POST(request: Request): Promise<NextResponse> {
   const auth = await requireAdmin(request);
   if (!auth.ok) {
