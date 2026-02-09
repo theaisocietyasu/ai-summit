@@ -3,6 +3,7 @@
 import CardNav from "@/components/ui/navigation/CardNav";
 import SponsorsSection from "@/components/SponsorsSection/SponsorsSection";
 import { navItems } from "@/lib/navItems";
+import styles from "@/app/subpage.module.css";
 
 export default function SponsorsPage() {
   const handleRegisterClick = () => {
@@ -10,13 +11,13 @@ export default function SponsorsPage() {
   };
 
   return (
-    <main className="min-h-screen">
+    <main className={styles.main}>
       {/* Background glows */}
-      <div className="pointer-events-none fixed right-0 top-1/2 h-[500px] w-[500px] -translate-y-1/2 rounded-full bg-space-magenta-dark/30 blur-[100px]" />
-      <div className="pointer-events-none fixed left-0 top-1/3 h-[400px] w-[400px] rounded-full bg-space-purple-mid/20 blur-[100px]" />
+      <div className={styles.glowRight} />
+      <div className={styles.glowLeft} />
 
-      <a href="/" className="fixed left-6 top-6 z-50">
-        <img src="/logo.png" alt="AIS Logo" className="h-10 w-auto" />
+      <a href="/" className={styles.logoContainer}>
+        <img src="/logo.png" alt="AIS Logo" className={styles.logoImage} />
       </a>
 
       <CardNav

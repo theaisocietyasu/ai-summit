@@ -6,11 +6,12 @@ import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import CardNav from "@/components/ui/navigation/CardNav";
-import { GlassCard } from "@/components/ui/cards";
 import { getEvents } from "@/app/lib/api";
 import { groupEventsByCategory } from "@/lib/eventCategories";
 import { normalizeTag } from "@/lib/normalizeTag";
 import { navItems } from "@/lib/navItems";
+import pageStyles from "@/app/subpage.module.css";
+import styles from "./events.module.css";
 
 interface Event {
   _id: string;
@@ -63,47 +64,46 @@ function EventsContent() {
   const grouped = groupEventsByCategory(events);
 
   return (
-    <div className="relative z-10 mx-auto max-w-7xl px-6">
+    <div className={styles.contentContainer}>
       {/* Page header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="mb-20 pt-32 text-center"
+        className={styles.pageHeader}
       >
-        <h1 className="mb-8 text-4xl font-bold text-white sm:text-5xl">
+        <h1 className={styles.pageTitle}>
           All{" "}
-          <span className="bg-gradient-to-r from-space-magenta-mid via-space-magenta-light to-space-purple-light bg-clip-text text-transparent">
-            Events
-          </span>
+          <span className={styles.pageTitleGradient}>Events</span>
         </h1>
-        <p className="mx-auto max-w-2xl text-xl leading-relaxed text-zinc-400">
+        <p className={styles.pageSubtitle}>
           Discover sessions, workshops, networking opportunities, and more
         </p>
       </motion.div>
 
       {/* Loading */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center gap-4 py-20">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-space-magenta-light border-t-transparent" />
-          <p className="text-zinc-400">Loading events...</p>
+        <div className={styles.loadingContainer}>
+          <div className={styles.spinner} />
+          <p className={styles.loadingText}>Loading events...</p>
         </div>
       ) : events.length === 0 ? (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="glass mx-auto max-w-lg rounded-3xl px-12 py-20 text-center"
         >
-          <div className="mb-8 text-6xl">{"\uD83D\uDCC5"}</div>
-          <h3 className="mb-6 text-2xl font-semibold text-white">
-            No events scheduled yet
-          </h3>
-          <p className="text-lg leading-relaxed text-zinc-400">
-            Events will be announced soon!
-          </p>
+          <div className={styles.emptyState}>
+            <div className={styles.emptyIcon}>{"\uD83D\uDCC5"}</div>
+            <h3 className={styles.emptyTitle}>
+              No events scheduled yet
+            </h3>
+            <p className={styles.emptyText}>
+              Events will be announced soon!
+            </p>
+          </div>
         </motion.div>
       ) : (
-        <div className="space-y-20 pb-20">
+        <div className={styles.sectionsContainer}>
           {SECTION_ORDER.map((section) => {
             const sectionEvents = grouped[section.key] || [];
             if (sectionEvents.length === 0) return null;
@@ -111,22 +111,22 @@ function EventsContent() {
               <section
                 key={section.key}
                 id={`category-${section.key}`}
-                className="scroll-mt-32"
+                className={styles.categorySection}
               >
                 <motion.h2
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
                   viewport={{ once: true }}
-                  className="mb-10 text-3xl font-bold text-white"
+                  className={styles.sectionTitle}
                 >
-                  <span className="mr-3">{section.icon}</span>
+                  <span className={styles.sectionIcon}>{section.icon}</span>
                   {section.title}
-                  <span className="ml-3 text-lg font-normal text-zinc-500">
+                  <span className={styles.sectionCount}>
                     ({sectionEvents.length})
                   </span>
                 </motion.h2>
-                <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <div className={styles.eventGrid}>
                   {sectionEvents.map((event: Event, index: number) => (
                     <motion.div
                       key={event._id}
@@ -135,41 +135,41 @@ function EventsContent() {
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                       viewport={{ once: true }}
                     >
-                      <GlassCard className="h-full">
+                      <div className={styles.eventCard}>
                         {/* Image */}
-                        <div className="relative mb-4 h-48 w-full overflow-hidden rounded-xl">
-                          <div className="absolute inset-0 z-10 bg-gradient-to-t from-space-black/80 via-transparent to-transparent" />
+                        <div className={styles.imageContainer}>
+                          <div className={styles.imageOverlay} />
                           <img
                             src={event.thumbnail_url}
                             alt={event.event_title}
-                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            className={styles.eventImage}
                           />
                         </div>
 
                         {/* Title */}
-                        <h3 className="mb-2 text-xl font-semibold text-white transition-colors group-hover:text-space-purple-light">
+                        <h3 className={styles.eventTitle}>
                           {event.event_title}
                         </h3>
 
                         {/* Description */}
-                        <p className="mb-4 line-clamp-3 text-sm text-zinc-400">
+                        <p className={styles.eventDescription}>
                           {event.event_description}
                         </p>
 
                         {/* Tags */}
                         {event.tags && event.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-2">
+                          <div className={styles.tagsContainer}>
                             {event.tags.map((tag, tagIndex) => (
                               <span
                                 key={tagIndex}
-                                className="inline-flex items-center rounded-full border border-space-purple-mid/50 bg-space-purple-dark/30 px-3 py-1 text-xs font-medium text-space-purple-light"
+                                className={styles.tag}
                               >
                                 {normalizeTag(tag)}
                               </span>
                             ))}
                           </div>
                         )}
-                      </GlassCard>
+                      </div>
                     </motion.div>
                   ))}
                 </div>
@@ -188,13 +188,13 @@ export default function EventsPage() {
   };
 
   return (
-    <main className="min-h-screen">
+    <main className={pageStyles.main}>
       {/* Background glows */}
-      <div className="pointer-events-none fixed right-0 top-1/2 h-[500px] w-[500px] -translate-y-1/2 rounded-full bg-space-magenta-dark/30 blur-[100px]" />
-      <div className="pointer-events-none fixed left-0 top-1/3 h-[400px] w-[400px] rounded-full bg-space-purple-mid/20 blur-[100px]" />
+      <div className={pageStyles.glowRight} />
+      <div className={pageStyles.glowLeft} />
 
-      <a href="/" className="fixed left-6 top-6 z-50">
-        <img src="/logo.png" alt="AIS Logo" className="h-10 w-auto" />
+      <a href="/" className={pageStyles.logoContainer}>
+        <img src="/logo.png" alt="AIS Logo" className={pageStyles.logoImage} />
       </a>
 
       <CardNav
@@ -209,8 +209,8 @@ export default function EventsPage() {
 
       <Suspense
         fallback={
-          <div className="flex min-h-screen items-center justify-center">
-            <div className="h-12 w-12 animate-spin rounded-full border-4 border-space-magenta-light border-t-transparent" />
+          <div className={styles.suspenseFallback}>
+            <div className={styles.spinner} />
           </div>
         }
       >
