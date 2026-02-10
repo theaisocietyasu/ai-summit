@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { normalizeTag, normalizeTags } from "@/lib/normalizeTag";
+import { MIN_WHY_ATTEND_LENGTH } from "@/lib/constants";
 
 const MAX_STRING_LENGTH = 1000;
 const MAX_BIO_LENGTH = 5000;
@@ -122,10 +123,10 @@ export const RegistrationSchema = z
           path: ["major"],
         });
       }
-      if (!data.why_attend || data.why_attend.length < 500) {
+      if (!data.why_attend || data.why_attend.length < MIN_WHY_ATTEND_LENGTH) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Why attend must be at least 500 characters",
+          message: `Why attend must be at least ${MIN_WHY_ATTEND_LENGTH} characters`,
           path: ["why_attend"],
         });
       }
