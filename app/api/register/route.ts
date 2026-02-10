@@ -51,7 +51,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       );
     }
 
-    const validated = parsed.data;
+    let validated = parsed.data;
     const isStaff = validated.academic_year === "Staff";
 
     // Check for duplicate email (case-insensitive)
@@ -59,7 +59,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     const existingRegistration = await db.collection("registrations").findOne({
       email: { $regex: new RegExp(`^${validated.email}$`, "i") },
     });
-
+    validated.email = validated.email.toLowerCase(); // Normalize email to lowercase before checking/storing
     if (existingRegistration) {
       return NextResponse.json(
         {
@@ -69,7 +69,6 @@ export async function POST(request: Request): Promise<NextResponse> {
         { status: 409 },
       );
     }
-
     const resume = form.get("resume");
     const resumeFile = resume instanceof File ? resume : null;
 
