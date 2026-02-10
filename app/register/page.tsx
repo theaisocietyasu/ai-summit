@@ -117,7 +117,7 @@ export default function RegisterPage() {
       }
 
       if (!isStaff) {
-        if (!formData.major || charCount < 500 || !formData.photo_release) {
+        if (!formData.major || charCount < 50 || !formData.photo_release) {
           setMessage({
             type: "error",
             text: "Please fill in all required fields and meet minimum requirements",
@@ -381,9 +381,9 @@ export default function RegisterPage() {
                     placeholder="Tell us about your interest in AI and what you hope to gain from attending..."
                   />
                   <div className={styles.charCountRow}>
-                    <span className={styles.hint}>Minimum 500 characters</span>
-                    <span className={charCount >= 500 ? styles.charCountMet : styles.charCount}>
-                      {charCount} / 500
+                    <span className={styles.hint}>Minimum 50 characters</span>
+                    <span className={charCount >= 50 ? styles.charCountMet : styles.charCount}>
+                      {charCount} / 50
                     </span>
                   </div>
                 </div>
