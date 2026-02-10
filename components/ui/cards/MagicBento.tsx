@@ -11,6 +11,7 @@ const MOBILE_BREAKPOINT = 768;
 
 export interface BentoCardData {
   color?: string;
+  backgroundImage?: string;
   title: string;
   description: string;
   label: string;
@@ -559,6 +560,12 @@ const MagicBento: React.FC<MagicBentoProps> = ({
             className: baseClassName,
             style: {
               backgroundColor: card.color || '#060010',
+              backgroundImage: card.backgroundImage
+                ? `linear-gradient(rgba(6, 0, 16, 0.7), rgba(6, 0, 16, 0.7)), url(${card.backgroundImage})`
+                : undefined,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
               '--glow-color': glowColor
             } as React.CSSProperties
           };

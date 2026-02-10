@@ -54,6 +54,22 @@ export async function POST(request: Request): Promise<NextResponse> {
     const validated = parsed.data;
     const isStaff = validated.academic_year === "Staff";
 
+    // Check for duplicate email (case-insensitive)
+    const db = await getDb();
+    const existingRegistration = await db.collection("registrations").findOne({
+      email: { $regex: new RegExp(`^${validated.email}$`, "i") },
+    });
+
+    if (existingRegistration) {
+      return NextResponse.json(
+        {
+          error: "Email already registered",
+          errors: { email: "This email has already been used for a registration" },
+        },
+        { status: 409 },
+      );
+    }
+
     const resume = form.get("resume");
     const resumeFile = resume instanceof File ? resume : null;
 
@@ -91,7 +107,6 @@ export async function POST(request: Request): Promise<NextResponse> {
       });
     }
 
-    const db = await getDb();
     const now = Math.floor(Date.now() / 1000);
 
     const registrationDoc = {
