@@ -7,6 +7,7 @@ import CardNav from "@/components/ui/navigation/CardNav";
 import { submitRegistration } from "@/app/lib/api";
 import type { CardNavItem } from "@/components/ui/navigation/CardNav";
 import styles from "./register.module.css";
+import { MIN_WHY_ATTEND_LENGTH } from "@/lib/constants";
 
 type MessageType = "success" | "error" | null;
 
@@ -117,7 +118,7 @@ export default function RegisterPage() {
       }
 
       if (!isStaff) {
-        if (!formData.major || charCount < 50 || !formData.photo_release) {
+        if (!formData.major || charCount < MIN_WHY_ATTEND_LENGTH || !formData.photo_release) {
           setMessage({
             type: "error",
             text: "Please fill in all required fields and meet minimum requirements",
@@ -381,9 +382,9 @@ export default function RegisterPage() {
                     placeholder="Tell us about your interest in AI and what you hope to gain from attending..."
                   />
                   <div className={styles.charCountRow}>
-                    <span className={styles.hint}>Minimum 50 characters</span>
-                    <span className={charCount >= 50 ? styles.charCountMet : styles.charCount}>
-                      {charCount} / 50
+                    <span className={styles.hint}>Minimum {MIN_WHY_ATTEND_LENGTH} characters</span>
+                    <span className={charCount >= MIN_WHY_ATTEND_LENGTH ? styles.charCountMet : styles.charCount}>
+                      {charCount} / {MIN_WHY_ATTEND_LENGTH}
                     </span>
                   </div>
                 </div>
