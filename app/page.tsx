@@ -7,7 +7,7 @@ import MagicBento from "@/components/ui/cards/MagicBento";
 import GradientText from "@/components/ui/effects/GradientText";
 import BlurText from "@/components/ui/effects/BlurText";
 import Countdown from "@/components/ui/effects/Countdown";
-import { getEvents } from "@/app/lib/api";
+import { getEvents, getSpeakers, getSponsors } from "@/app/lib/api";
 import { groupEventsByCategory, EVENT_TAG_CATEGORIES } from "@/lib/eventCategories";
 import { navItems } from "@/lib/navItems";
 import type { BentoCardData } from "@/components/ui/cards/MagicBento";
@@ -20,12 +20,33 @@ interface Event {
   tags: string[];
 }
 
+interface Speaker {
+  _id: string;
+  first_name: string;
+  middle_name?: string | null;
+  last_name?: string | null;
+  bio: string;
+  headshot_img_url: string;
+}
+
+interface Sponsor {
+  _id: string;
+  sponsor_name: string;
+  sponsor_logo: string;
+}
+
 // Event date: February 27, 2026 at 5:00 PM
 const eventDate = new Date('2026-02-27T17:00:00');
 
 function buildCardLabel(count: number): string {
   if (count === 0) return "Coming Soon";
   return `${count} Event${count !== 1 ? "s" : ""}`;
+}
+
+function getRandomImage(items: any[], imageField: string): string | undefined {
+  if (!items || items.length === 0) return undefined;
+  const randomItem = items[Math.floor(Math.random() * items.length)];
+  return randomItem[imageField];
 }
 
 function buildCardDescription(
@@ -38,19 +59,37 @@ function buildCardDescription(
 
 export default function Home() {
   const [events, setEvents] = useState<Event[]>([]);
+  const [speakers, setSpeakers] = useState<Speaker[]>([]);
+  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
 
   useEffect(() => {
-    const fetchEvents = async () => {
+    const fetchData = async () => {
       try {
-        const response: any = await getEvents();
-        if (response.success && response.data?.events) {
-          setEvents(response.data.events);
+        const [eventsRes, speakersRes, sponsorsRes] = await Promise.all([
+          getEvents(),
+          getSpeakers(),
+          getSponsors()
+        ]);
+
+        if (eventsRes.success && eventsRes.data) {
+          const data = eventsRes.data as any;
+          if (data.events) setEvents(data.events);
+        }
+
+        if (speakersRes.success && speakersRes.data) {
+          const data = speakersRes.data as any;
+          if (data.speakers) setSpeakers(data.speakers);
+        }
+
+        if (sponsorsRes.success && sponsorsRes.data) {
+          const data = sponsorsRes.data as any;
+          if (data.sponsors) setSponsors(data.sponsors);
         }
       } catch (error) {
-        console.error("Failed to load events:", error);
+        console.error("Failed to load data:", error);
       }
     };
-    fetchEvents();
+    fetchData();
   }, []);
 
   const grouped = useMemo(() => groupEventsByCategory(events), [events]);
@@ -58,6 +97,7 @@ export default function Home() {
   const bentoCards: BentoCardData[] = useMemo(() => [
     {
       color: "#060010",
+      backgroundImage: getRandomImage(speakers, 'headshot_img_url'),
       title: "Featured Speakers",
       description: "Learn from industry leaders and AI pioneers at the forefront of innovation",
       label: "Speakers",
@@ -67,6 +107,7 @@ export default function Home() {
     },
     {
       color: "#060010",
+      backgroundImage: getRandomImage(grouped["events-sessions"], 'thumbnail_url'),
       title: "Events & Sessions",
       description: buildCardDescription(
         grouped["events-sessions"],
@@ -79,6 +120,7 @@ export default function Home() {
     },
     {
       color: "#060010",
+      backgroundImage: getRandomImage(grouped.networking, 'thumbnail_url'),
       title: EVENT_TAG_CATEGORIES.networking.title,
       description: buildCardDescription(
         grouped.networking,
@@ -91,6 +133,7 @@ export default function Home() {
     },
     {
       color: "#060010",
+      backgroundImage: getRandomImage(sponsors, 'sponsor_logo'),
       title: "Our Sponsors",
       description: "Thank you to our incredible partners making this event possible",
       label: "Sponsors",
@@ -100,6 +143,7 @@ export default function Home() {
     },
     {
       color: "#060010",
+      backgroundImage: getRandomImage(grouped.workshops, 'thumbnail_url'),
       title: EVENT_TAG_CATEGORIES.workshops.title,
       description: buildCardDescription(
         grouped.workshops,
@@ -112,6 +156,7 @@ export default function Home() {
     },
     {
       color: "#060010",
+      backgroundImage: getRandomImage(grouped.resources, 'thumbnail_url'),
       title: EVENT_TAG_CATEGORIES.resources.title,
       description: buildCardDescription(
         grouped.resources,
@@ -122,7 +167,7 @@ export default function Home() {
       href: EVENT_TAG_CATEGORIES.resources.href,
       hoverOverlay: "Explore Resources \u2192",
     },
-  ], [grouped]);
+  ], [grouped, speakers, sponsors]);
 
   const handleRegisterClick = () => {
     window.location.href = "/register";
