@@ -52,6 +52,8 @@ export default function RegisterPage() {
     why_attend: "",
     relevant_courses: "",
     prior_work_exp: "",
+    company_name: "",
+    designation: "",
     photo_release: false,
   });
 
@@ -123,6 +125,15 @@ export default function RegisterPage() {
           setLoading(false);
           return;
         }
+      } else {
+        if (!formData.company_name || !formData.designation) {
+          setMessage({
+            type: "error",
+            text: "Please fill in all required fields",
+          });
+          setLoading(false);
+          return;
+        }
       }
 
       const form = new FormData();
@@ -145,6 +156,8 @@ export default function RegisterPage() {
         }
       } else {
         form.append("academic_year", "Staff");
+        form.append("company_name", formData.company_name);
+        form.append("designation", formData.designation);
       }
 
       form.append("photo_release", "true");
@@ -167,6 +180,8 @@ export default function RegisterPage() {
           why_attend: "",
           relevant_courses: "",
           prior_work_exp: "",
+          company_name: "",
+          designation: "",
           photo_release: false,
         });
         setResumeFile(null);
@@ -229,7 +244,7 @@ export default function RegisterPage() {
               onClick={() => setRegistrationType("staff")}
               className={`${styles.tab} ${registrationType === "staff" ? styles.tabActive : ""}`}
             >
-              Staff
+              Staff/Industry
             </button>
           </div>
 
@@ -319,6 +334,50 @@ export default function RegisterPage() {
                 Must be @asu.edu or @gmail.com
               </p>
             </div>
+
+            {/* Company Name and Designation - Staff/Industry only */}
+            {registrationType === "staff" && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className={styles.conditionalFields}
+              >
+                <div className={styles.formGroup}>
+                  <label htmlFor="company_name" className={styles.label}>
+                    Company Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="company_name"
+                    name="company_name"
+                    value={formData.company_name}
+                    onChange={handleInputChange}
+                    maxLength={1000}
+                    required
+                    className={styles.input}
+                    placeholder="Your Company"
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label htmlFor="designation" className={styles.label}>
+                    Designation *
+                  </label>
+                  <input
+                    type="text"
+                    id="designation"
+                    name="designation"
+                    value={formData.designation}
+                    onChange={handleInputChange}
+                    maxLength={1000}
+                    required
+                    className={styles.input}
+                    placeholder="Your Job Title"
+                  />
+                </div>
+              </motion.div>
+            )}
 
             {/* Academic Year - Students only */}
             {registrationType === "student" && (
