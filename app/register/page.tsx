@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import CardNav from "@/components/ui/navigation/CardNav";
@@ -9,6 +9,7 @@ import type { CardNavItem } from "@/components/ui/navigation/CardNav";
 import styles from "./register.module.css";
 
 type MessageType = "success" | "error" | null;
+type RegistrationType = "student" | "staff";
 
 const navItems: CardNavItem[] = [
   {
@@ -39,6 +40,7 @@ const navItems: CardNavItem[] = [
 ];
 
 export default function RegisterPage() {
+  const [registrationType, setRegistrationType] = useState<RegistrationType>("student");
   const [formData, setFormData] = useState({
     first_name: "",
     middle_name: "",
@@ -56,14 +58,9 @@ export default function RegisterPage() {
     type: null,
     text: "",
   });
-  const [isStaff, setIsStaff] = useState(false);
   const [charCount, setCharCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
-
-  useEffect(() => {
-    setIsStaff(formData.academic_year === "Staff");
-  }, [formData.academic_year]);
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -106,7 +103,7 @@ export default function RegisterPage() {
         !formData.first_name ||
         !formData.last_name ||
         !formData.email ||
-        !formData.academic_year
+        !formData.photo_release
       ) {
         setMessage({
           type: "error",
@@ -116,8 +113,8 @@ export default function RegisterPage() {
         return;
       }
 
-      if (!isStaff) {
-        if (!formData.major || charCount < 50 || !formData.photo_release) {
+      if (registrationType === "student") {
+        if (!formData.academic_year || !formData.major || charCount < 500 || !resumeFile) {
           setMessage({
             type: "error",
             text: "Please fill in all required fields and meet minimum requirements",
@@ -125,23 +122,6 @@ export default function RegisterPage() {
           setLoading(false);
           return;
         }
-        if (!resumeFile) {
-          setMessage({
-            type: "error",
-            text: "Resume is required for non-staff registrations",
-          });
-          setLoading(false);
-          return;
-        }
-      }
-
-      if (!formData.photo_release) {
-        setMessage({
-          type: "error",
-          text: "You must acknowledge the photo release policy",
-        });
-        setLoading(false);
-        return;
       }
 
       const form = new FormData();
@@ -150,19 +130,23 @@ export default function RegisterPage() {
         form.append("middle_name", formData.middle_name);
       form.append("last_name", formData.last_name);
       form.append("email", formData.email);
-      form.append("academic_year", formData.academic_year);
-      if (!isStaff) {
+
+      if (registrationType === "student") {
+        form.append("academic_year", formData.academic_year);
         form.append("major", formData.major);
         form.append("why_attend", formData.why_attend);
         if (formData.relevant_courses)
           form.append("relevant_courses", formData.relevant_courses);
         if (formData.prior_work_exp)
           form.append("prior_work_exp", formData.prior_work_exp);
+        if (resumeFile) {
+          form.append("resume", resumeFile);
+        }
+      } else {
+        form.append("academic_year", "Staff");
       }
+
       form.append("photo_release", "true");
-      if (resumeFile) {
-        form.append("resume", resumeFile);
-      }
 
       const response = await submitRegistration(form);
 
@@ -228,6 +212,24 @@ export default function RegisterPage() {
             <p className={styles.subtitle}>
               Join Arizona State University&apos;s premier AI conference
             </p>
+          </div>
+
+          {/* Registration Type Tabs */}
+          <div className={styles.tabsContainer}>
+            <button
+              type="button"
+              onClick={() => setRegistrationType("student")}
+              className={`${styles.tab} ${registrationType === "student" ? styles.tabActive : ""}`}
+            >
+              Students
+            </button>
+            <button
+              type="button"
+              onClick={() => setRegistrationType("staff")}
+              className={`${styles.tab} ${registrationType === "staff" ? styles.tabActive : ""}`}
+            >
+              Staff
+            </button>
           </div>
 
           {/* Messages */}
@@ -317,32 +319,33 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            {/* Academic Year */}
-            <div className={styles.formGroup}>
-              <label htmlFor="academic_year" className={styles.label}>
-                Academic Year *
-              </label>
-              <select
-                id="academic_year"
-                name="academic_year"
-                value={formData.academic_year}
-                onChange={handleInputChange}
-                required
-                className={styles.input}
-              >
-                <option value="">Select your academic year...</option>
-                <option value="Freshman">Freshman</option>
-                <option value="Sophomore">Sophomore</option>
-                <option value="Junior">Junior</option>
-                <option value="Senior">Senior</option>
-                <option value="Master's">Master&apos;s</option>
-                <option value="PhD">PhD</option>
-                <option value="Staff">Staff</option>
-              </select>
-            </div>
+            {/* Academic Year - Students only */}
+            {registrationType === "student" && (
+              <div className={styles.formGroup}>
+                <label htmlFor="academic_year" className={styles.label}>
+                  Academic Year *
+                </label>
+                <select
+                  id="academic_year"
+                  name="academic_year"
+                  value={formData.academic_year}
+                  onChange={handleInputChange}
+                  required
+                  className={styles.input}
+                >
+                  <option value="">Select your academic year...</option>
+                  <option value="Freshman">Freshman</option>
+                  <option value="Sophomore">Sophomore</option>
+                  <option value="Junior">Junior</option>
+                  <option value="Senior">Senior</option>
+                  <option value="Master's">Master&apos;s</option>
+                  <option value="PhD">PhD</option>
+                </select>
+              </div>
+            )}
 
-            {/* Conditional fields for non-staff */}
-            {!isStaff && (
+            {/* Conditional fields for students */}
+            {registrationType === "student" && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
@@ -381,9 +384,9 @@ export default function RegisterPage() {
                     placeholder="Tell us about your interest in AI and what you hope to gain from attending..."
                   />
                   <div className={styles.charCountRow}>
-                    <span className={styles.hint}>Minimum 50 characters</span>
-                    <span className={charCount >= 50 ? styles.charCountMet : styles.charCount}>
-                      {charCount} / 50
+                    <span className={styles.hint}>Minimum 500 characters</span>
+                    <span className={charCount >= 500 ? styles.charCountMet : styles.charCount}>
+                      {charCount} / 500
                     </span>
                   </div>
                 </div>
@@ -398,7 +401,7 @@ export default function RegisterPage() {
                     name="resume"
                     onChange={handleFileChange}
                     accept="application/pdf"
-                    required={!isStaff}
+                    required
                     className={styles.fileInput}
                   />
                   <p className={styles.hint}>

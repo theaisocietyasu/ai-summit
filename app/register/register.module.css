@@ -41,6 +41,35 @@
   font-size: 1rem;
 }
 
+.tabsContainer {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(77, 35, 134, 0.3);
+}
+
+.tab {
+  flex: 1;
+  padding: 1rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #71717a;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab:hover {
+  color: #a1a1aa;
+}
+
+.tabActive {
+  color: #fff;
+  border-bottom-color: #6a1740;
+}
+
 .message {
   padding: 1rem;
   border-radius: 12px;
