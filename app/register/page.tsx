@@ -328,11 +328,13 @@ export default function RegisterPage() {
                 maxLength={1000}
                 required
                 className={styles.input}
-                placeholder="you@asu.edu"
+                placeholder={registrationType === "student" ? "you@asu.edu" : "you@example.com"}
               />
-              <p className={styles.hint}>
-                Must be @asu.edu or @gmail.com
-              </p>
+              {registrationType === "student" && (
+                <p className={styles.hint}>
+                  Must be @asu.edu or @gmail.com
+                </p>
+              )}
             </div>
 
             {/* Company Name and Designation - Staff/Industry only */}

@@ -67,8 +67,6 @@ export const SponsorSchema = z.object({
   sponsor_logo: z.string().trim().min(1, "Sponsor logo URL is required"),
 });
 
-const ALLOWED_EMAIL_DOMAINS = ["@asu.edu", "@gmail.com"];
-
 export const RegistrationSchema = z
   .object({
     first_name: z
@@ -87,14 +85,7 @@ export const RegistrationSchema = z
       .trim()
       .min(1, "Email is required")
       .email("Invalid email format")
-      .max(MAX_STRING_LENGTH)
-      .refine(
-        (email) =>
-          ALLOWED_EMAIL_DOMAINS.some((domain) =>
-            email.toLowerCase().endsWith(domain),
-          ),
-        { message: "Email must be from @asu.edu or @gmail.com domain" },
-      ),
+      .max(MAX_STRING_LENGTH),
     academic_year: z.enum(
       ["Freshman", "Sophomore", "Junior", "Senior", "Master's", "PhD", "Staff"],
       {
@@ -116,6 +107,18 @@ export const RegistrationSchema = z
   })
   .superRefine((data, ctx) => {
     if (data.academic_year !== "Staff") {
+      const ALLOWED_EMAIL_DOMAINS = ["@asu.edu", "@gmail.com"];
+      if (
+        !ALLOWED_EMAIL_DOMAINS.some((domain) =>
+          data.email.toLowerCase().endsWith(domain),
+        )
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Email must be from @asu.edu or @gmail.com domain",
+          path: ["email"],
+        });
+      }
       if (!data.major || data.major.trim().length === 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
