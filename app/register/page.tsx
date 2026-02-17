@@ -386,7 +386,7 @@ export default function RegisterPage() {
                   />
                   <div className={styles.charCountRow}>
                     <span className={styles.hint}>Minimum {MIN_WHY_ATTEND_LENGTH}0 characters</span>
-                    <span className={charCount >= MIN_WHY_ATTEND_LENGTH0 ? styles.charCountMet : styles.charCount}>
+                    <span className={charCount >= MIN_WHY_ATTEND_LENGTH ? styles.charCountMet : styles.charCount}>
                       {charCount} / {MIN_WHY_ATTEND_LENGTH}0
                     </span>
                   </div>
