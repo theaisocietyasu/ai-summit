@@ -105,6 +105,9 @@ export default function RegistrationModal({
                 "created_at",
                 "updated_at",
                 "photo_release",
+                "qr_token",
+                "checked_in",
+                "checked_in_at",
               ].includes(key)
             ) {
               return null;
@@ -122,6 +125,15 @@ export default function RegistrationModal({
               </div>
             );
           })}
+
+          <div className={styles.detailRow}>
+            <span className={styles.label}>Checked In:</span>
+            <span className={styles.value}>
+              {registration.checked_in
+                ? `Yes — ${registration.checked_in_at ? new Date(registration.checked_in_at * 1000).toLocaleString() : "time unknown"}`
+                : "No"}
+            </span>
+          </div>
 
           {registration.resume && (
             <div className={styles.detailRow}>

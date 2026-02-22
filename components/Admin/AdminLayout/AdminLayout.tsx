@@ -84,6 +84,11 @@ export default function AdminLayout({
                   Registrations
                 </button>
               </li>
+              <li>
+                <Link href="/admin/checkin" className={styles.navLink}>
+                  Check-In
+                </Link>
+              </li>
             </ul>
           </aside>
 
