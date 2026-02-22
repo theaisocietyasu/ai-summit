@@ -130,7 +130,8 @@ export async function POST(request: Request): Promise<NextResponse> {
     const result = await db.collection("registrations").insertOne(registrationDoc);
 
     // Fire-and-forget approval email with embedded QR code
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "";
+    const requestOrigin = new URL(request.url).origin;
+    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || requestOrigin);
     const qrUrl = `${siteUrl}/admin/checkin?token=${qrToken}`;
     console.log("[register] Starting email flow for:", normalizedEmail);
     console.log("[register] RESEND_API_KEY set?", !!process.env.RESEND_API_KEY);
