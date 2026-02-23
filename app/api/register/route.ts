@@ -3,6 +3,8 @@ import { ObjectId } from "mongodb";
 import { getDb } from "@/lib/server/mongo";
 import { deleteFromGridFS, uploadToGridFS } from "@/lib/server/gridfs";
 import { RegistrationSchema } from "@/lib/server/validation";
+import { generateQRCodeDataURI } from "@/lib/server/qrcode";
+import { sendApprovalEmail } from "@/lib/server/email";
 
 export const runtime = "nodejs";
 
@@ -109,19 +111,48 @@ export async function POST(request: Request): Promise<NextResponse> {
     }
 
     const now = Math.floor(Date.now() / 1000);
+    const qrToken = crypto.randomUUID();
 
     const registrationDoc = {
       ...validated,
       email: normalizedEmail,
       resume: uploadedFileId ? uploadedFileId.toHexString() : undefined,
       is_waitlisted: false,
-      is_approved: false,
+      is_approved: true,
       is_rejected: false,
+      qr_token: qrToken,
+      checked_in: false,
+      checked_in_at: null,
       created_at: now,
       updated_at: now,
     };
 
     const result = await db.collection("registrations").insertOne(registrationDoc);
+
+    // Fire-and-forget approval email with embedded QR code
+    const requestOrigin = new URL(request.url).origin;
+    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || requestOrigin);
+    const qrUrl = `${siteUrl}/admin/checkin?token=${qrToken}`;
+    console.log("[register] Starting email flow for:", normalizedEmail);
+    console.log("[register] RESEND_API_KEY set?", !!process.env.RESEND_API_KEY);
+    console.log("[register] EMAIL_FROM:", process.env.EMAIL_FROM ?? "(not set)");
+    console.log("[register] NEXT_PUBLIC_SITE_URL:", process.env.NEXT_PUBLIC_SITE_URL ?? "(not set)");
+    console.log("[register] QR URL:", qrUrl);
+    generateQRCodeDataURI(qrUrl)
+      .then((qrDataUri) => {
+        console.log("[register] QR code generated, length:", qrDataUri.length);
+        return sendApprovalEmail(
+          {
+            first_name: validated.first_name,
+            last_name: validated.last_name,
+            email: normalizedEmail,
+            academic_year: validated.academic_year,
+          },
+          qrDataUri,
+        );
+      })
+      .then(() => console.log("[register] sendApprovalEmail resolved successfully"))
+      .catch((err) => console.error("[register] Email/QR error:", err));
 
     return NextResponse.json(
       { message: "Registration submitted successfully", id: result.insertedId },

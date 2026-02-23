@@ -117,7 +117,7 @@ export default function RegisterPage() {
       }
 
       if (registrationType === "student") {
-        if (!formData.academic_year || !formData.major || charCount < 500 || !resumeFile) {
+        if (!formData.academic_year || !formData.major || charCount < MIN_WHY_ATTEND_LENGTH || !resumeFile) {
           setMessage({
             type: "error",
             text: "Please fill in all required fields and meet minimum requirements",
@@ -446,9 +446,9 @@ export default function RegisterPage() {
                     placeholder="Tell us about your interest in AI and what you hope to gain from attending..."
                   />
                   <div className={styles.charCountRow}>
-                    <span className={styles.hint}>Minimum {MIN_WHY_ATTEND_LENGTH}0 characters</span>
+                    <span className={styles.hint}>Minimum {MIN_WHY_ATTEND_LENGTH} characters</span>
                     <span className={charCount >= MIN_WHY_ATTEND_LENGTH ? styles.charCountMet : styles.charCount}>
-                      {charCount} / {MIN_WHY_ATTEND_LENGTH}0
+                      {charCount} / {MIN_WHY_ATTEND_LENGTH}
                     </span>
                   </div>
                 </div>
