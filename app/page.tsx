@@ -194,10 +194,6 @@ export default function Home() {
         {/* Hero Section */}
         <section className={styles.hero}>
           <div className={styles.heroContent}>
-            <span className={styles.badge}>
-              <span className={styles.badgeDot}></span>
-              Coming Soon
-            </span>
             <h1 className={styles.title}>
               <BlurText
                 text="AI Summit"
@@ -220,9 +216,32 @@ export default function Home() {
               Arizona State University&apos;s Premier AI Conference
             </p>
 
-            {/* Event Date & Countdown */}
+            {/* Venue Info & Countdown */}
             <div className={styles.eventInfo}>
-              <p className={styles.eventDate}>February 27, 2026 at 5:00 PM</p>
+              <div className={styles.venueCard}>
+                <div className={styles.venueItem}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                  <span>
+                  <a
+                    href="https://maps.app.goo.gl/947v2aJBfMzUoW6s9"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Senita Ballroom, Student Pavilion, ASU Tempe
+                  </a></span>
+                </div>
+                <span className={styles.venueDivider} aria-hidden="true">·</span>
+                <div className={styles.venueItem}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                  <span>February 27, 2026 &middot; 5:00 PM onwards</span>
+                </div>
+              </div>
               <Countdown targetDate={eventDate} />
             </div>
 
