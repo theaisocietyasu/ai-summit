@@ -40,6 +40,7 @@ export default function RegistrationsSection() {
   } | null>(null);
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const [statusFilter, setStatusFilter] = useState<Set<string>>(new Set());
   const [yearFilter, setYearFilter] = useState<Set<string>>(new Set());
   const [sortBy, setSortBy] = useState<"name" | "email" | "year" | "status">(
@@ -213,9 +214,14 @@ export default function RegistrationsSection() {
         <div className={styles.searchBox}>
           <input
             type="text"
-            placeholder="Search by name or email..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search by name or email... (press Enter)"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                setSearchTerm(searchInput);
+              }
+            }}
             className={styles.searchInput}
           />
         </div>
