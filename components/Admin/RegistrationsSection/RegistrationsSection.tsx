@@ -14,6 +14,8 @@ interface Registration {
   is_approved: boolean;
   is_waitlisted: boolean;
   is_rejected: boolean;
+  checked_in?: boolean;
+  checked_in_at?: number;
   resume?: string;
 }
 
@@ -169,6 +171,25 @@ export default function RegistrationsSection() {
         fetchRegistrations();
       } else {
         setMessage({ type: "error", text: "Failed to update status" });
+      }
+    } catch {
+      setMessage({ type: "error", text: "Network error" });
+    }
+  };
+
+  const handleCheckIn = async (registrationId: string) => {
+    try {
+      const res = await fetch(
+        `/api/admin/registration/${registrationId}/checkin`,
+        { method: "POST" },
+      );
+
+      if (res.ok) {
+        setMessage({ type: "success", text: "Checked in successfully" });
+        fetchRegistrations();
+      } else {
+        const data = await res.json();
+        setMessage({ type: "error", text: data.error ?? "Failed to check in" });
       }
     } catch {
       setMessage({ type: "error", text: "Network error" });
@@ -341,6 +362,22 @@ export default function RegistrationsSection() {
                           </option>
                         ))}
                       </select>
+                      {registration.checked_in ? (
+                        <span className={styles.checkedInBadge}>Checked In</span>
+                      ) : (
+                        <button
+                          className={styles.checkInBtn}
+                          onClick={() => handleCheckIn(registration._id)}
+                          disabled={registration.status !== "Approved"}
+                          title={
+                            registration.status !== "Approved"
+                              ? "Must be approved to check in"
+                              : "Check in this attendee"
+                          }
+                        >
+                          Check In
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

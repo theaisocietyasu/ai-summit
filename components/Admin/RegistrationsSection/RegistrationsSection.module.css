@@ -301,6 +301,38 @@
   color: #e4e4e4;
 }
 
+.checkInBtn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  background: rgba(34, 197, 94, 0.2);
+  color: #86efac;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 0.85rem;
+}
+
+.checkInBtn:hover:not(:disabled) {
+  background: rgba(34, 197, 94, 0.3);
+  transform: translateY(-1px);
+}
+
+.checkInBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.checkedInBadge {
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
 .empty {
   text-align: center;
   padding: 40px;
