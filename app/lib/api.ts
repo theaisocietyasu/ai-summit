@@ -71,6 +71,39 @@ export async function getFile(fileId: string) {
   return apiCall(`/files/${fileId}`);
 }
 
+export async function submitQuickRegistration(formData: FormData) {
+  try {
+    const url = buildApiUrl("/quick-register");
+    const response = await fetch(url, {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ error: "Request failed" }));
+      return {
+        success: false,
+        error: error.error || `HTTP ${response.status}`,
+        errors: error.errors,
+      };
+    }
+
+    const data = await response.json();
+    return {
+      success: true,
+      data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
 export async function submitRegistration(formData: FormData) {
   try {
     const url = buildApiUrl("/register");
