@@ -5,6 +5,7 @@ import { MIN_WHY_ATTEND_LENGTH } from "@/lib/constants";
 const MAX_STRING_LENGTH = 1000;
 const MAX_BIO_LENGTH = 5000;
 const MAX_DESCRIPTION_LENGTH = 10000;
+const ALLOWED_EMAIL_DOMAINS = ["@asu.edu", "@gmail.com"];
 
 export const BannerSchema = z.object({
   banner_title: z
@@ -66,8 +67,6 @@ export const SponsorSchema = z.object({
   }),
   sponsor_logo: z.string().trim().min(1, "Sponsor logo URL is required"),
 });
-
-const ALLOWED_EMAIL_DOMAINS = ["@asu.edu", "@gmail.com"];
 
 export const RegistrationSchema = z
   .object({
