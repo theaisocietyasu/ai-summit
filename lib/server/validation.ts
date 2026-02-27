@@ -86,14 +86,7 @@ export const RegistrationSchema = z
       .trim()
       .min(1, "Email is required")
       .email("Invalid email format")
-      .max(MAX_STRING_LENGTH)
-      .refine(
-        (email) =>
-          ALLOWED_EMAIL_DOMAINS.some((domain) =>
-            email.toLowerCase().endsWith(domain),
-          ),
-        { message: "Email must be from @asu.edu or @gmail.com domain" },
-      ),
+      .max(MAX_STRING_LENGTH),
     academic_year: z.enum(
       ["Freshman", "Sophomore", "Junior", "Senior", "Master's", "PhD", "Staff"],
       {
@@ -115,6 +108,18 @@ export const RegistrationSchema = z
   })
   .superRefine((data, ctx) => {
     if (data.academic_year !== "Staff") {
+      const ALLOWED_EMAIL_DOMAINS = ["@asu.edu", "@gmail.com"];
+      if (
+        !ALLOWED_EMAIL_DOMAINS.some((domain) =>
+          data.email.toLowerCase().endsWith(domain),
+        )
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Email must be from @asu.edu or @gmail.com domain",
+          path: ["email"],
+        });
+      }
       if (!data.major || data.major.trim().length === 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -131,6 +136,55 @@ export const RegistrationSchema = z
       }
     }
   });
+
+const STUDENT_ACADEMIC_YEARS = [
+  "Freshman",
+  "Sophomore",
+  "Junior",
+  "Senior",
+  "Master's",
+  "PhD",
+] as const;
+
+export const QuickRegistrationSchema = z.object({
+  first_name: z
+    .string()
+    .trim()
+    .min(1, "First name is required")
+    .max(MAX_STRING_LENGTH),
+  middle_name: z.string().trim().max(MAX_STRING_LENGTH).nullable().optional(),
+  last_name: z
+    .string()
+    .trim()
+    .min(1, "Last name is required")
+    .max(MAX_STRING_LENGTH),
+  email: z
+    .string()
+    .trim()
+    .min(1, "Email is required")
+    .email("Invalid email format")
+    .max(MAX_STRING_LENGTH)
+    .refine(
+      (email) =>
+        ALLOWED_EMAIL_DOMAINS.some((domain) =>
+          email.toLowerCase().endsWith(domain),
+        ),
+      { message: "Email must be from @asu.edu or @gmail.com domain" },
+    ),
+  academic_year: z.enum(STUDENT_ACADEMIC_YEARS, {
+    errorMap: () => ({
+      message:
+        "Academic year must be Freshman, Sophomore, Junior, Senior, Master's, or PhD",
+    }),
+  }),
+  major: z
+    .string()
+    .trim()
+    .min(1, "Major is required")
+    .max(MAX_STRING_LENGTH),
+});
+
+export type QuickRegistrationInput = z.infer<typeof QuickRegistrationSchema>;
 
 export const RegistrationUpdateSchema = z.object({
   is_waitlisted: z.boolean().optional(),
