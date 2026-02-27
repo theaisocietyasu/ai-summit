@@ -55,8 +55,12 @@ export default function CheckInPage() {
   const [manualToken, setManualToken] = useState("");
   const [showManual, setShowManual] = useState(false);
   const lastTokenRef = useRef<string>("");
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const resetRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Cleanup reset timer on unmount
+  useEffect(() => {
+    return () => { if (resetRef.current) clearTimeout(resetRef.current); };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -110,15 +114,8 @@ export default function CheckInPage() {
       const token = extractToken(raw);
       if (!token) return;
 
-      // 3-second debounce on repeated scans of same token
       if (token === lastTokenRef.current) return;
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-
       lastTokenRef.current = token;
-      debounceRef.current = setTimeout(() => {
-        lastTokenRef.current = "";
-      }, 3000);
-
       processToken(token);
     },
     [processToken],
@@ -132,6 +129,7 @@ export default function CheckInPage() {
       return;
     }
     setManualToken("");
+    lastTokenRef.current = token;
     processToken(token);
   };
 
@@ -168,15 +166,9 @@ export default function CheckInPage() {
           </Link>
         </div>
 
-        {/* Scanner */}
-        <div style={{ marginBottom: 24 }}>
-          {scanStatus.type === "idle" || scanStatus.type === "loading" ? (
-            <CheckInScanner onRawScan={handleRawScan} />
-          ) : (
-            <div style={{ width: "100%", maxWidth: 480, margin: "0 auto", aspectRatio: "4/3", background: "#12082a", borderRadius: 12, border: "2px solid #2d1b69", display: "flex", alignItems: "center", justifyContent: "center", color: "#6b5b9e" }}>
-              Scanner paused — resetting shortly...
-            </div>
-          )}
+        {/* Scanner — always mounted so the camera stream never restarts between scans */}
+        <div style={{ marginBottom: 24, position: "relative" }}>
+          <CheckInScanner onRawScan={handleRawScan} />
         </div>
 
         {/* Status Banner */}
