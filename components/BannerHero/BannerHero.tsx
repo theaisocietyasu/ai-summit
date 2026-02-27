@@ -34,7 +34,7 @@ export default function BannerHero() {
     fetchBanner();
   }, []);
 
-  const title = banner?.banner_title || "AI Summit 2025";
+  const title = banner?.banner_title || "AI Summit 2026";
   const description =
     banner?.banner_description ||
     "Join us for an exciting exploration of artificial intelligence, machine learning, and the future of technology.";
@@ -91,7 +91,7 @@ export default function BannerHero() {
               className="mb-12 inline-flex items-center gap-3 rounded-2xl border border-space-purple-mid/30 bg-space-purple-dark/20 px-8 py-4 backdrop-blur-sm"
             >
               <span className="text-space-magenta-light">📅</span>
-              <span className="text-zinc-200">Spring 2025 • Arizona State University</span>
+              <span className="text-zinc-200">Spring 2026 • Arizona State University</span>
             </motion.div>
 
             {/* CTA Buttons */}

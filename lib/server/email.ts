@@ -34,7 +34,7 @@ function baseHtml(body: string): string {
       </td></tr>
       <tr>
         <td style="background:#0a0520;padding:20px 40px;text-align:center;border-top:1px solid #2d1b69;">
-          <p style="margin:0;font-size:12px;color:#6b5b9e;">© 2025 AI Society at ASU · AI Summit</p>
+          <p style="margin:0;font-size:12px;color:#6b5b9e;">© 2026 AI Society at ASU · AI Summit</p>
         </td>
       </tr>
     </table>
